@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>CinemaBook</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background: #f4f4f4; }
+        header { background: #1a1a2e; color: white; padding: 16px 32px; display: flex; justify-content: space-between; align-items: center; }
+        .header-left h1 { font-size: 22px; }
+        .header-left p { font-size: 13px; color: #aaa; margin-top: 2px; }
+        .header-right { display: flex; align-items: center; gap: 16px; }
+        .admin-badge { background: #e0b400; color: #1a1a2e; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; display: flex; align-items: center; gap: 6px; }
+        .admin-icon { width: 18px; height: 18px; }
+        .user-name { font-size: 14px; color: #ddd; }
+        .logout-btn { background: transparent; border: 1px solid #555; color: #ddd; padding: 6px 14px; border-radius: 6px; font-size: 13px; cursor: pointer; text-decoration: none; }
+        .logout-btn:hover { border-color: white; color: white; }
+        .container { max-width: 960px; margin: 40px auto; padding: 0 20px; }
+        h2 { margin-bottom: 20px; color: #1a1a2e; }
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .card { background: white; border-radius: 10px; padding: 28px 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); text-decoration: none; color: #333; transition: transform 0.15s, box-shadow 0.15s; display: block; }
+        .card:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(0,0,0,0.12); }
+        .card-icon { font-size: 28px; margin-bottom: 12px; }
+        .card h3 { font-size: 17px; color: #1a1a2e; margin-bottom: 6px; }
+        .card p { font-size: 13px; color: #888; }
+        .admin-only { border-left: 3px solid #e0b400; }
+        .section-label { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #aaa; margin: 32px 0 12px; }
+    </style>
+</head>
+<body>
+<header>
+    <div class="header-left">
+        <h1>CinemaBook</h1>
+        <p>Cinema Booking System</p>
+    </div>
+    <div class="header-right">
+        <div th:if="${userRole == 'ADMIN'}" class="admin-badge">
+            <svg class="admin-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2L3 7l9 5 9-5-9-5z"/>
+                <path d="M3 12l9 5 9-5"/>
+                <path d="M3 17l9 5 9-5"/>
+            </svg>
+            Admin
+        </div>
+        <span class="user-name" th:text="${userName}"></span>
+        <a href="/profile" class="logout-btn">Profile</a>
+        <a href="/logout" class="logout-btn">Logout</a>
+    </div>
+</header>
+
+<div class="container">
+    <p class="section-label">Browse</p>
+    <div class="grid">
+        <a href="/movies" class="card">
+            <div class="card-icon">🎬</div>
+            <h3>Movies</h3>
+            <p>Browse now showing and upcoming movies</p>
+        </a>
+        <a href="/shows" class="card">
+            <div class="card-icon">🎭</div>
+            <h3>Shows</h3>
+            <p>View showtimes and available seats</p>
+        </a>
+        <a href="/bookings/my" class="card">
+            <div class="card-icon">🎟️</div>
+            <h3>My Bookings</h3>
+            <p>View and manage your bookings</p>
+        </a>
+        <a href="/payments/my" class="card">
+            <div class="card-icon">💳</div>
+            <h3>My Payments</h3>
+            <p>View your payment history</p>
+        </a>
+        <a href="/feedback" class="card">
+            <div class="card-icon">⭐</div>
+            <h3>Feedback</h3>
+            <p>Read and leave movie reviews</p>
+        </a>
+        <a href="/profile" class="card">
+            <div class="card-icon">👤</div>
+            <h3>My Profile</h3>
+            <p>Edit your account details</p>
+        </a>
+    </div>
+
+    <div th:if="${userRole == 'ADMIN'}">
+        <p class="section-label">Admin Panel</p>
+        <div class="grid">
+            <a href="/users" class="card admin-only">
+                <div class="card-icon">👥</div>
+                <h3>Manage Users</h3>
+                <p>View, edit and delete user accounts</p>
+            </a>
+            <a href="/bookings" class="card admin-only">
+                <div class="card-icon">📋</div>
+                <h3>All Bookings</h3>
+                <p>View and manage all bookings</p>
+            </a>
+            <a href="/payments" class="card admin-only">
+                <div class="card-icon">💰</div>
+                <h3>All Payments</h3>
+                <p>View and manage all payments</p>
+            </a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

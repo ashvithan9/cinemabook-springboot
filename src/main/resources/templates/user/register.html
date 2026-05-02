@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Register - CinemaBook</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background: #f4f4f4; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .card { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); width: 100%; max-width: 420px; }
+        .logo { text-align: center; margin-bottom: 28px; }
+        .logo h1 { font-size: 26px; color: #1a1a2e; }
+        .logo p { color: #888; font-size: 14px; margin-top: 4px; }
+        label { display: block; font-size: 13px; font-weight: bold; margin-bottom: 6px; color: #444; }
+        input { width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; margin-bottom: 18px; }
+        input:focus { outline: none; border-color: #1a1a2e; }
+        .btn { width: 100%; padding: 12px; background: #1a1a2e; color: white; border: none; border-radius: 6px; font-size: 15px; cursor: pointer; }
+        .btn:hover { background: #2a2a4e; }
+        .error { background: #fdecea; color: #c0392b; padding: 10px 14px; border-radius: 6px; font-size: 13px; margin-bottom: 18px; }
+        .footer { text-align: center; margin-top: 20px; font-size: 13px; color: #666; }
+        .footer a { color: #1a1a2e; font-weight: bold; text-decoration: none; }
+    </style>
+</head>
+<body>
+<div class="card">
+    <div class="logo">
+        <h1>CinemaBook</h1>
+        <p>Create your account</p>
+    </div>
+    <div th:if="${error}" class="error" th:text="${error}"></div>
+    <form method="post" action="/register" th:object="${user}">
+        <label>Full Name</label>
+        <input type="text" th:field="*{name}" placeholder="John Doe" required/>
+        <label>Email</label>
+        <input type="email" th:field="*{email}" placeholder="you@example.com" required/>
+        <label>Password</label>
+        <input type="password" th:field="*{password}" placeholder="••••••••" required/>
+        <label>Phone</label>
+        <input type="text" th:field="*{phone}" placeholder="0771234567" required/>
+        <button type="submit" class="btn">Create account</button>
+    </form>
+    <div class="footer">
+        Already have an account? <a href="/login">Sign in</a>
+    </div>
+</div>
+</body>
+</html>

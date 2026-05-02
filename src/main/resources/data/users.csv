@@ -1,0 +1,3 @@
+userId,name,email,password,phone,role
+ADMIN001,Admin,admin@cinemabook.com,admin123,0000000000,ADMIN
+USR1777623644895,Ashvithan,ashvithan9@gmail.com,ash123,0767611627,CUSTOMER

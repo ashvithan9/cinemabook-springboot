@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User Detail - CinemaBook</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background: #f4f4f4; }
+        header { background: #1a1a2e; color: white; padding: 16px 32px; display: flex; justify-content: space-between; }
+        header a { color: #e0b400; text-decoration: none; }
+        .container { max-width: 500px; margin: 40px auto; background: white; padding: 32px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        h1 { margin-bottom: 24px; }
+        .field { margin-bottom: 16px; }
+        .field label { font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 1px; }
+        .field p { font-size: 16px; margin-top: 4px; }
+        .badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: bold; }
+        .badge-admin { background: #1a1a2e; color: white; }
+        .badge-customer { background: #e0b400; color: #1a1a2e; }
+        .actions { display: flex; gap: 12px; margin-top: 28px; }
+        .btn { padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; text-decoration: none; font-size: 14px; }
+        .btn-edit { background: #e0b400; color: #1a1a2e; }
+        .btn-danger { background: #c0392b; color: white; }
+    </style>
+</head>
+<body>
+<header>
+    <span>🎬 CinemaBook</span>
+    <div style="display:flex; gap:16px; align-items:center;">
+        <a href="/" style="color:#e0b400; text-decoration:none;">← Home</a>
+        <a href="/logout" style="color:#aaa; text-decoration:none; font-size:13px;">Logout</a>
+    </div>
+</header>
+<div class="container">
+    <h1>User Details</h1>
+    <div class="field"><label>User ID</label><p th:text="${user.userId}"></p></div>
+    <div class="field"><label>Name</label><p th:text="${user.name}"></p></div>
+    <div class="field"><label>Email</label><p th:text="${user.email}"></p></div>
+    <div class="field"><label>Phone</label><p th:text="${user.phone}"></p></div>
+    <div class="field">
+        <label>Role</label>
+        <p>
+            <span th:classappend="${user.role == 'ADMIN'} ? 'badge-admin' : 'badge-customer'"
+                  class="badge" th:text="${user.role}"></span>
+        </p>
+    </div>
+    <div class="actions">
+        <a th:href="@{/users/{id}/edit(id=${user.userId})}" class="btn btn-edit">Edit</a>
+        <form th:action="@{/users/{id}/delete(id=${user.userId})}" method="post"
+              onsubmit="return confirm('Are you sure you want to delete this user?')">
+            <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

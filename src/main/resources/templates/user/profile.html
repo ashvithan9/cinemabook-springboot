@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>My Profile - CinemaBook</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background: #f4f4f4; }
+        header { background: #1a1a2e; color: white; padding: 16px 32px; display: flex; justify-content: space-between; align-items: center; }
+        header div { display: flex; gap: 16px; align-items: center; }
+        header a { color: #e0b400; text-decoration: none; font-size: 14px; }
+        .container { max-width: 500px; margin: 40px auto; padding: 0 16px; }
+        .card { background: white; border-radius: 10px; padding: 32px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        h1 { margin-bottom: 24px; color: #1a1a2e; font-size: 22px; }
+        label { display: block; font-size: 13px; font-weight: bold; margin-bottom: 6px; color: #444; }
+        input { width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; margin-bottom: 18px; }
+        input:focus { outline: none; border-color: #1a1a2e; }
+        input[readonly] { background: #f9f9f9; color: #888; cursor: not-allowed; }
+        .btn { width: 100%; padding: 12px; background: #1a1a2e; color: white; border: none; border-radius: 6px; font-size: 15px; cursor: pointer; }
+        .btn:hover { background: #2a2a4e; }
+        .success { background: #eafaf1; color: #1e8449; padding: 10px 14px; border-radius: 6px; font-size: 13px; margin-bottom: 18px; }
+        .role-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; margin-bottom: 24px; }
+        .role-admin { background: #1a1a2e; color: #e0b400; }
+        .role-customer { background: #e0b400; color: #1a1a2e; }
+    </style>
+</head>
+<body>
+<header>
+    <span>🎬 CinemaBook</span>
+    <div>
+        <a href="/">← Home</a>
+        <a href="/logout">Logout</a>
+    </div>
+</header>
+<div class="container">
+    <div class="card">
+        <h1>My Profile</h1>
+
+        <div th:if="${param.updated}" class="success">Profile updated successfully.</div>
+
+        <span th:classappend="${user.role == 'ADMIN'} ? 'role-admin' : 'role-customer'"
+              class="role-badge" th:text="${user.role}"></span>
+
+        <form method="post" action="/profile/edit" th:object="${user}">
+
+            <label>Full Name</label>
+            <input type="text" th:field="*{name}" required/>
+
+            <label>Email</label>
+            <input type="email" th:field="*{email}" required/>
+
+            <label>Password</label>
+            <input type="password" th:field="*{password}" placeholder="Enter new password"/>
+
+            <label>Phone</label>
+            <input type="text" th:field="*{phone}"/>
+
+            <label>User ID</label>
+            <input type="text" th:value="${user.userId}" readonly/>
+
+            <button type="submit" class="btn">Save Changes</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

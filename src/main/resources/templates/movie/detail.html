@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${movie.title} + ' - CinemaBook'"></title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background: #0a0a0a; color: #f0f0f0; }
+        header { background: #1a0000; border-bottom: 2px solid #cc0000; padding: 16px 32px; display: flex; justify-content: space-between; align-items: center; }
+        header span { font-size: 20px; font-weight: bold; color: #cc0000; }
+        header div { display: flex; gap: 16px; }
+        header a { color: #f0f0f0; text-decoration: none; font-size: 14px; }
+        header a:hover { color: #cc0000; }
+        .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
+        .movie-layout { display: grid; grid-template-columns: 280px 1fr; gap: 36px; }
+        .poster { width: 100%; border-radius: 10px; object-fit: cover; aspect-ratio: 2/3; background: #1a1a1a; display: flex; align-items: center; justify-content: center; font-size: 60px; border: 1px solid #2a2a2a; overflow: hidden; }
+        .poster img { width: 100%; height: 100%; object-fit: cover; }
+        .info h1 { font-size: 28px; color: #f0f0f0; margin-bottom: 10px; }
+        .badge { display: inline-block; padding: 4px 12px; border-radius: 10px; font-size: 12px; font-weight: bold; margin-bottom: 16px; }
+        .badge-now { background: #cc0000; color: white; }
+        .badge-soon { background: #333; color: #aaa; }
+        .rating { color: #e0b400; font-size: 20px; margin-bottom: 16px; }
+        .meta { color: #888; font-size: 14px; margin-bottom: 8px; }
+        .meta span { color: #f0f0f0; }
+        .description { color: #bbb; font-size: 15px; line-height: 1.7; margin: 20px 0; border-left: 3px solid #cc0000; padding-left: 16px; }
+        .actions { display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
+        .btn { padding: 12px 28px; border: none; border-radius: 6px; cursor: pointer; text-decoration: none; font-size: 15px; font-weight: bold; }
+        .btn-book { background: #cc0000; color: white; }
+        .btn-book:hover { background: #aa0000; }
+        .btn-edit { background: #333; color: #f0f0f0; }
+        .btn-edit:hover { background: #444; }
+        .btn-delete { background: transparent; border: 2px solid #cc0000; color: #cc0000; }
+        .btn-delete:hover { background: #cc0000; color: white; }
+        .divider { border: none; border-top: 1px solid #2a2a2a; margin: 36px 0; }
+    </style>
+</head>
+<body>
+<header>
+    <span>🎬 CinemaBook</span>
+    <div>
+        <a href="/movies">← Movies</a>
+        <a href="/">Home</a>
+        <a href="/logout">Logout</a>
+    </div>
+</header>
+
+<div class="container">
+    <div class="movie-layout">
+        <!-- Poster -->
+        <div>
+            <div class="poster">
+                <img th:if="${movie.imageUrl != null and !movie.imageUrl.isEmpty()}"
+                     th:src="${movie.imageUrl}" th:alt="${movie.title}"
+                     onerror="this.style.display='none'"/>
+                <span th:if="${movie.imageUrl == null or movie.imageUrl.isEmpty()}">🎬</span>
+            </div>
+        </div>
+
+        <!-- Info -->
+        <div class="info">
+            <h1 th:text="${movie.title}"></h1>
+            <span th:classappend="${movie.status == 'NOW_SHOWING'} ? 'badge-now' : 'badge-soon'"
+                  class="badge"
+                  th:text="${movie.status == 'NOW_SHOWING'} ? 'Now Showing' : 'Coming Soon'"></span>
+            <div class="rating" th:text="'★ ' + ${movie.rating} + ' / 10'"></div>
+            <div class="meta">Genre: <span th:text="${movie.genre}"></span></div>
+            <div class="meta">Duration: <span th:text="${movie.duration} + ' minutes'"></span></div>
+            <div class="description" th:text="${movie.description}"></div>
+
+            <div class="actions">
+                <!-- User: book tickets -->
+                <a th:if="${movie.status == 'NOW_SHOWING'}"
+                   th:href="@{/shows(movieId=${movie.movieId})}"
+                   class="btn btn-book">🎟 Book Tickets</a>
+
+                <!-- Admin controls -->
+                <a th:if="${userRole == 'ADMIN'}"
+                   th:href="@{/movies/{id}/edit(id=${movie.movieId})}"
+                   class="btn btn-edit">Edit</a>
+                <form th:if="${userRole == 'ADMIN'}"
+                      th:action="@{/movies/{id}/delete(id=${movie.movieId})}"
+                      method="post" onsubmit="return confirm('Delete this movie?')">
+                    <button type="submit" class="btn btn-delete">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User Form - CinemaBook</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial, sans-serif; background: #f4f4f4; }
+        header { background: #1a1a2e; color: white; padding: 16px 32px; display: flex; justify-content: space-between; }
+        header a { color: #e0b400; text-decoration: none; }
+        .container { max-width: 500px; margin: 40px auto; background: white; padding: 32px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        h1 { margin-bottom: 24px; }
+        label { display: block; margin-bottom: 6px; font-weight: bold; font-size: 14px; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; margin-bottom: 18px; font-size: 14px; }
+        input:focus, select:focus { outline: none; border-color: #1a1a2e; }
+        .btn { width: 100%; padding: 12px; background: #1a1a2e; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; }
+        .btn:hover { background: #2a2a4e; }
+        .error { color: #c0392b; font-size: 13px; margin-top: -14px; margin-bottom: 12px; display: none; }
+    </style>
+</head>
+<body>
+<header>
+    <span>🎬 CinemaBook</span>
+    <div style="display:flex; gap:16px; align-items:center;">
+        <a href="/" style="color:#e0b400; text-decoration:none;">← Home</a>
+        <a href="/logout" style="color:#aaa; text-decoration:none; font-size:13px;">Logout</a>
+    </div>
+</header>
+<div class="container">
+    <h1 th:text="${isEdit} ? 'Edit User' : 'Create New User'"></h1>
+    <form th:action="${isEdit} ? @{/users/{id}/edit(id=${user.userId})} : @{/users}"
+          th:object="${user}" method="post" id="userForm">
+
+        <label>Full Name</label>
+        <input type="text" th:field="*{name}" placeholder="John Doe" id="name"/>
+        <div class="error" id="nameError">Name is required.</div>
+
+        <label>Email</label>
+        <input type="email" th:field="*{email}" placeholder="john@example.com" id="email"/>
+        <div class="error" id="emailError">Valid email is required.</div>
+
+        <label>Phone</label>
+        <input type="text" th:field="*{phone}" placeholder="0771234567" id="phone"/>
+        <div class="error" id="phoneError">Phone must be 10 digits.</div>
+
+        <label>Role</label>
+        <select th:field="*{role}">
+            <option value="">-- Select Role --</option>
+            <option value="CUSTOMER">Customer</option>
+            <option value="ADMIN">Admin</option>
+        </select>
+
+        <button type="submit" class="btn" onclick="return validateForm()">
+            <span th:text="${isEdit} ? 'Update User' : 'Create User'"></span>
+        </button>
+    </form>
+</div>
+<script>
+    function validateForm() {
+        let valid = true;
+
+        const name = document.getElementById("name").value.trim();
+        const nameErr = document.getElementById("nameError");
+        nameErr.style.display = name === "" ? "block" : "none";
+        if (name === "") valid = false;
+
+        const email = document.getElementById("email").value.trim();
+        const emailErr = document.getElementById("emailError");
+        const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        emailErr.style.display = !emailOk ? "block" : "none";
+        if (!emailOk) valid = false;
+
+        const phone = document.getElementById("phone").value.trim();
+        const phoneErr = document.getElementById("phoneError");
+        const phoneOk = /^\d{10}$/.test(phone);
+        phoneErr.style.display = !phoneOk ? "block" : "none";
+        if (!phoneOk) valid = false;
+
+        return valid;
+    }
+</script>
+</body>
+</html>
