@@ -38,7 +38,7 @@ cinemabook/
 │       ├── booking/
 │       ├── payment/
 │       └── feedback/
-├── data/               ← CSV files live here (project root)
+├── data/               
 │   ├── users.csv
 │   ├── movies.csv
 │   ├── shows.csv
