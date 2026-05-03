@@ -62,7 +62,7 @@ cinemabook/
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/ashvithan9/cinemabook.git
+   git clone https://github.com/ashvithan9/cinemabook-springboot.git
    cd cinemabook
    ```
 
