@@ -3,52 +3,267 @@
 <head>
     <meta charset="UTF-8">
     <title th:text="${movie.title} + ' - CinemaBook'"></title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cinema: {
+                            red: '#e8192c',
+                            darkred: '#b01020',
+                            black: '#0a0a0a',
+                            card: '#111111',
+                            border: '#2a2a2a',
+                            muted: '#555555',
+                            light: '#c8c8c8',
+                        }
+                    },
+                    fontFamily: {
+                        display: ['Bebas Neue', 'sans-serif'],
+                        body: ['DM Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: Arial, sans-serif; background: #0a0a0a; color: #f0f0f0; }
-        header { background: #1a0000; border-bottom: 2px solid #cc0000; padding: 16px 32px; display: flex; justify-content: space-between; align-items: center; }
-        header span { font-size: 20px; font-weight: bold; color: #cc0000; }
-        header div { display: flex; gap: 16px; }
-        header a { color: #f0f0f0; text-decoration: none; font-size: 14px; }
-        header a:hover { color: #cc0000; }
-        .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
-        .movie-layout { display: grid; grid-template-columns: 280px 1fr; gap: 36px; }
-        .poster { width: 100%; border-radius: 10px; object-fit: cover; aspect-ratio: 2/3; background: #1a1a1a; display: flex; align-items: center; justify-content: center; font-size: 60px; border: 1px solid #2a2a2a; overflow: hidden; }
-        .poster img { width: 100%; height: 100%; object-fit: cover; }
-        .info h1 { font-size: 28px; color: #f0f0f0; margin-bottom: 10px; }
-        .badge { display: inline-block; padding: 4px 12px; border-radius: 10px; font-size: 12px; font-weight: bold; margin-bottom: 16px; }
-        .badge-now { background: #cc0000; color: white; }
-        .badge-soon { background: #333; color: #aaa; }
-        .rating { color: #e0b400; font-size: 20px; margin-bottom: 16px; }
-        .meta { color: #888; font-size: 14px; margin-bottom: 8px; }
-        .meta span { color: #f0f0f0; }
-        .description { color: #bbb; font-size: 15px; line-height: 1.7; margin: 20px 0; border-left: 3px solid #cc0000; padding-left: 16px; }
-        .actions { display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap; }
-        .btn { padding: 12px 28px; border: none; border-radius: 6px; cursor: pointer; text-decoration: none; font-size: 15px; font-weight: bold; }
-        .btn-book { background: #cc0000; color: white; }
-        .btn-book:hover { background: #aa0000; }
-        .btn-edit { background: #333; color: #f0f0f0; }
-        .btn-edit:hover { background: #444; }
-        .btn-delete { background: transparent; border: 2px solid #cc0000; color: #cc0000; }
-        .btn-delete:hover { background: #cc0000; color: white; }
-        .divider { border: none; border-top: 1px solid #2a2a2a; margin: 36px 0; }
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background-color: #0a0a0a;
+            color: #c8c8c8;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.5;
+        }
+
+        header {
+            background: #0a0a0a;
+            border-bottom: 1px solid #2a2a2a;
+            position: relative;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, #e8192c, transparent);
+        }
+
+        .logo-text {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.6rem;
+            letter-spacing: 2px;
+            color: white;
+        }
+
+        .logo-accent { color: #e8192c; }
+
+        .nav-link {
+            color: #888;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .nav-link:hover { color: #e8192c; }
+
+        .nav-link-back {
+            color: #c8c8c8;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.2s;
+        }
+        .nav-link-back:hover { color: #e8192c; }
+
+        .poster-wrap {
+            width: 100%;
+            border-radius: 12px;
+            aspect-ratio: 2/3;
+            background: #111111;
+            border: 1px solid #2a2a2a;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+        }
+
+        .poster-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .movie-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2.4rem;
+            letter-spacing: 3px;
+            color: white;
+            line-height: 1.1;
+        }
+
+        .badge-now {
+            background: linear-gradient(135deg, #e8192c, #b01020);
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            padding: 4px 14px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            display: inline-block;
+        }
+
+        .badge-soon {
+            background: transparent;
+            border: 1px solid #2a2a2a;
+            color: #555555;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            padding: 4px 14px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            display: inline-block;
+        }
+
+        .rating-text {
+            color: #e8b400;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .meta-label {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #555555;
+        }
+
+        .meta-value {
+            font-size: 14px;
+            color: #e0e0e0;
+        }
+
+        .description-text {
+            color: #888;
+            font-size: 14px;
+            line-height: 1.8;
+            border-left: 3px solid #e8192c;
+            padding-left: 16px;
+        }
+
+        .btn-book {
+            background: linear-gradient(135deg, #e8192c, #b01020);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 12px 28px;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(232, 25, 44, 0.25);
+            display: inline-block;
+        }
+        .btn-book:hover {
+            background: linear-gradient(135deg, #ff2d42, #e8192c);
+            color: white;
+            box-shadow: 0 4px 22px rgba(232, 25, 44, 0.45);
+            transform: translateY(-1px);
+        }
+
+        .btn-edit {
+            background: transparent;
+            border: 1px solid #e8192c;
+            color: #e8192c;
+            border-radius: 6px;
+            padding: 12px 28px;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            display: inline-block;
+        }
+        .btn-edit:hover {
+            background: #e8192c;
+            color: white;
+        }
+
+        .btn-delete {
+            background: transparent;
+            border: 1px solid #2a2a2a;
+            color: #555;
+            border-radius: 6px;
+            padding: 12px 28px;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.2s ease;
+        }
+        .btn-delete:hover {
+            border-color: #e8192c;
+            color: #e8192c;
+            background: #1a0a0a;
+        }
     </style>
 </head>
-<body>
-<header>
-    <span>🎬 CinemaBook</span>
-    <div>
-        <a href="/movies">← Movies</a>
-        <a href="/">Home</a>
-        <a href="/logout">Logout</a>
+<body style="position: relative; z-index: 1;">
+
+<!-- Header -->
+<header class="px-6 py-4">
+    <div class="max-w-5xl mx-auto flex justify-between items-center">
+        <span class="logo-text">🎬 Cinema<span class="logo-accent">Book</span></span>
+        <div class="flex gap-6 items-center">
+            <a href="/movies" class="nav-link-back">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                Movies
+            </a>
+            <a href="/" class="nav-link">Home</a>
+            <a href="/logout" class="nav-link">Logout</a>
+        </div>
     </div>
 </header>
 
-<div class="container">
-    <div class="movie-layout">
+<!-- Main Content -->
+<div class="max-w-5xl mx-auto px-4 py-12" style="position: relative; z-index: 1;">
+    <div class="grid gap-10" style="grid-template-columns: 260px 1fr;">
+
         <!-- Poster -->
         <div>
-            <div class="poster">
+            <div class="poster-wrap">
                 <img th:if="${movie.imageUrl != null and !movie.imageUrl.isEmpty()}"
                      th:src="${movie.imageUrl}" th:alt="${movie.title}"
                      onerror="this.style.display='none'"/>
@@ -57,34 +272,52 @@
         </div>
 
         <!-- Info -->
-        <div class="info">
-            <h1 th:text="${movie.title}"></h1>
-            <span th:classappend="${movie.status == 'NOW_SHOWING'} ? 'badge-now' : 'badge-soon'"
-                  class="badge"
-                  th:text="${movie.status == 'NOW_SHOWING'} ? 'Now Showing' : 'Coming Soon'"></span>
-            <div class="rating" th:text="'★ ' + ${movie.rating} + ' / 10'"></div>
-            <div class="meta">Genre: <span th:text="${movie.genre}"></span></div>
-            <div class="meta">Duration: <span th:text="${movie.duration} + ' minutes'"></span></div>
-            <div class="description" th:text="${movie.description}"></div>
+        <div class="flex flex-col gap-4">
 
-            <div class="actions">
-                <!-- User: book tickets -->
+            <h1 class="movie-title" th:text="${movie.title}"></h1>
+
+            <div>
+                <span th:classappend="${movie.status == 'NOW_SHOWING'} ? 'badge-now' : 'badge-soon'"
+                      class="badge"
+                      th:text="${movie.status == 'NOW_SHOWING'} ? 'Now Showing' : 'Coming Soon'"></span>
+            </div>
+
+            <div class="rating-text" th:text="'★ ' + ${movie.rating} + ' / 10'"></div>
+
+            <div class="flex flex-col gap-2">
+                <div>
+                    <span class="meta-label">Genre</span><br/>
+                    <span class="meta-value" th:text="${movie.genre}"></span>
+                </div>
+                <div>
+                    <span class="meta-label">Duration</span><br/>
+                    <span class="meta-value" th:text="${movie.duration} + ' minutes'"></span>
+                </div>
+            </div>
+
+            <p class="description-text" th:text="${movie.description}"></p>
+
+            <div class="flex gap-3 flex-wrap mt-2">
                 <a th:if="${movie.status == 'NOW_SHOWING'}"
                    th:href="@{/shows(movieId=${movie.movieId})}"
-                   class="btn btn-book">🎟 Book Tickets</a>
+                   class="btn-book">🎟 Book Tickets</a>
 
-                <!-- Admin controls -->
                 <a th:if="${userRole == 'ADMIN'}"
                    th:href="@{/movies/{id}/edit(id=${movie.movieId})}"
-                   class="btn btn-edit">Edit</a>
+                   class="btn-edit">Edit</a>
+
                 <form th:if="${userRole == 'ADMIN'}"
                       th:action="@{/movies/{id}/delete(id=${movie.movieId})}"
                       method="post" onsubmit="return confirm('Delete this movie?')">
-                    <button type="submit" class="btn btn-delete">Delete</button>
+                    <button type="submit" class="btn-delete">Delete</button>
                 </form>
             </div>
+
         </div>
     </div>
 </div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
