@@ -1,1 +1,8 @@
-feedbackId,userId,movieId,rating,comment,date
+id,username,movieTitle,rating,comment,date,likes
+1,john_doe,Avengers Endgame,5,Absolutely breathtaking! Best movie of the decade.,2025-01-10,4
+2,sarah_k,Oppenheimer,4,Intense and brilliantly crafted. Nolan at his best.,2025-01-11,2
+3,mike_lee,Barbie,2,Not really my type of movie but well made.,2025-01-12,1
+4,priya_s,Inception,5,Mind-blowing. Watched it three times already!,2025-01-13,6
+5,tom_h,Fast X,1,Too over the top even for this franchise.,2025-01-14,0
+6,Rashindu,Harrypoter,4,Nice,2026-05-04,0
+7,Seneshi gunawardhana ,MY Fault,5,amazing,2026-05-05,0
