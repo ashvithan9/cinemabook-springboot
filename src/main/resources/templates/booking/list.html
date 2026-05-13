@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>My Bookings - CinemaBook</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cinema: {
+                            red: '#e8192c',
+                            darkred: '#b01020',
+                            black: '#0a0a0a',
+                            card: '#111111',
+                            border: '#2a2a2a',
+                            muted: '#555555',
+                            light: '#c8c8c8',
+                        }
+                    },
+                    fontFamily: {
+                        display: ['Bebas Neue', 'sans-serif'],
+                        body: ['DM Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background-color: #0a0a0a;
+            color: #c8c8c8;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.5;
+        }
+
+        header {
+            background: #0a0a0a;
+            border-bottom: 1px solid #2a2a2a;
+            position: relative;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, #e8192c, transparent);
+        }
+
+        .logo-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.6rem;
+            letter-spacing: 2px;
+            color: white;
+            text-decoration: none;
+        }
+
+        .logo-accent { color: #e8192c; }
+
+        .logo-sub {
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #555555;
+            margin-top: 1px;
+        }
+
+        .admin-badge {
+            background: linear-gradient(135deg, #e8192c, #b01020);
+            color: white;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .user-name {
+            font-size: 13px;
+            color: #888;
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: 1px solid #2a2a2a;
+            color: #888;
+            padding: 6px 16px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+            font-family: 'DM Sans', sans-serif;
+        }
+        .nav-btn:hover {
+            border-color: #e8192c;
+            color: #e8192c;
+        }
+
+        .section-label {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #555555;
+            margin-bottom: 16px;
+            margin-top: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-primary-custom {
+            background: linear-gradient(135deg, #e8192c, #b01020);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-decoration: none;
+            border: none;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        
+        .btn-primary-custom:hover {
+            box-shadow: 0 4px 15px rgba(232, 25, 44, 0.4);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        /* Booking Cards */
+        .booking-card {
+            background: #111111;
+            border: 1px solid #2a2a2a;
+            border-radius: 12px;
+            padding: 24px;
+            color: #c8c8c8;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .booking-card:hover {
+            border-color: #3a3a3a;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .booking-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; bottom: 0;
+            width: 3px;
+            background: #e8192c;
+            opacity: 0.8;
+        }
+
+        .status-badge {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .status-confirmed {
+            background: rgba(46, 204, 113, 0.15);
+            color: #2ecc71;
+            border: 1px solid rgba(46, 204, 113, 0.3);
+        }
+
+        .status-cancelled {
+            background: rgba(232, 25, 44, 0.15);
+            color: #e8192c;
+            border: 1px solid rgba(232, 25, 44, 0.3);
+        }
+
+        .movie-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.8rem;
+            color: white;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+            margin-top: 8px;
+        }
+
+        .booking-detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 13px;
+            border-bottom: 1px dashed #2a2a2a;
+            padding-bottom: 8px;
+        }
+        
+        .booking-detail-row:last-of-type {
+            border-bottom: none;
+            margin-bottom: 16px;
+        }
+
+        .detail-label {
+            color: #888;
+        }
+
+        .detail-value {
+            color: white;
+            font-weight: 500;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: auto;
+        }
+
+        .btn-action {
+            flex: 1;
+            text-align: center;
+            padding: 8px 0;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .btn-view {
+            background: transparent;
+            border: 1px solid #3a3a3a;
+            color: white;
+        }
+
+        .btn-view:hover {
+            background: #2a2a2a;
+            color: white;
+        }
+
+        .btn-cancel {
+            background: rgba(232, 25, 44, 0.1);
+            border: 1px solid rgba(232, 25, 44, 0.3);
+            color: #e8192c;
+        }
+
+        .btn-cancel:hover {
+            background: #e8192c;
+            color: white;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: #111111;
+            border: 1px dashed #3a3a3a;
+            border-radius: 12px;
+        }
+    </style>
+</head>
+<body style="position: relative; z-index: 1;">
+
+<!-- Header -->
+<header class="px-6 py-4">
+    <div class="max-w-5xl mx-auto flex justify-between items-center">
+        <div>
+            <a href="/" class="logo-title">Cinema<span class="logo-accent">Book</span></a>
+            <div class="logo-sub">Cinema Booking System</div>
+        </div>
+        <div class="flex items-center gap-4">
+            <div th:if="${userRole == 'ADMIN'}" class="admin-badge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2L3 7l9 5 9-5-9-5z"/>
+                    <path d="M3 12l9 5 9-5"/>
+                    <path d="M3 17l9 5 9-5"/>
+                </svg>
+                Admin
+            </div>
+            <span class="user-name" th:text="${userName}"></span>
+            <a href="/profile" class="nav-btn">Profile</a>
+            <a href="/" class="nav-btn">Dashboard</a>
+        </div>
+    </div>
+</header>
+
+<!-- Main Content -->
+<div class="max-w-5xl mx-auto px-4 pb-16" style="position: relative; z-index: 1;">
+
+    <div class="section-label">
+        <span>My Bookings</span>
+        <a href="/bookings/new" class="btn-primary-custom">+ New Booking</a>
+    </div>
+    
+    <div th:if="${bookings.empty}" class="empty-state">
+        <div class="text-4xl mb-4">🎟️</div>
+        <h3 class="text-white text-xl font-semibold mb-2">No Bookings Yet</h3>
+        <p class="text-gray-400 mb-6 text-sm">You haven't booked any movie tickets yet.</p>
+        <a href="/bookings/new" class="btn-primary-custom">Book a Ticket Now</a>
+    </div>
+
+    <div th:unless="${bookings.empty}" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div th:each="booking : ${bookings}" class="booking-card">
+            <div th:classappend="${booking.status == 'CONFIRMED' ? 'status-confirmed' : 'status-cancelled'}" 
+                 class="status-badge" th:text="${booking.status}">CONFIRMED</div>
+            
+            <div class="text-xs text-gray-500 uppercase tracking-widest font-semibold mb-1">Movie Ticket</div>
+            <div class="movie-title" th:text="${booking.movieTitle}">Movie Title</div>
+            
+            <div class="mt-4">
+                <div class="booking-detail-row">
+                    <span class="detail-label">Showtime</span>
+                    <span class="detail-value" th:text="${booking.showTime}">2026-05-20 18:00</span>
+                </div>
+                <div class="booking-detail-row">
+                    <span class="detail-label">Seats</span>
+                    <span class="detail-value" th:text="${booking.seats} + ' (' + ${booking.seatNumbers} + ')'">2 (A1, A2)</span>
+                </div>
+                <div class="booking-detail-row">
+                    <span class="detail-label">Total Price</span>
+                    <span class="detail-value text-green-400" th:text="'$' + ${#numbers.formatDecimal(booking.totalPrice, 1, 2)}">$20.00</span>
+                </div>
+                <div class="booking-detail-row border-none mb-4">
+                    <span class="detail-label">Booking Ref</span>
+                    <span class="detail-value text-xs font-mono" th:text="${booking.bookingId.substring(0,8)}">ABC12345</span>
+                </div>
+            </div>
+            
+            <div class="card-actions">
+                <a th:href="@{'/bookings/' + ${booking.bookingId}}" class="btn-action btn-view">View Ticket</a>
+                <a th:if="${booking.status == 'CONFIRMED'}" th:href="@{'/bookings/' + ${booking.bookingId} + '/cancel'}" class="btn-action btn-cancel" onclick="return confirm('Are you sure you want to cancel this booking?')">Cancel</a>
+                <a th:if="${userRole == 'ADMIN'}" th:href="@{'/bookings/' + ${booking.bookingId} + '/delete'}" class="btn-action btn-cancel" onclick="return confirm('Admin: Delete this record permanently?')">Delete</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

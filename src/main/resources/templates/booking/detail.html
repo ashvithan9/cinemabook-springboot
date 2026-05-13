@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Booking Details - CinemaBook</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cinema: {
+                            red: '#e8192c',
+                            darkred: '#b01020',
+                            black: '#0a0a0a',
+                            card: '#111111',
+                            border: '#2a2a2a',
+                            muted: '#555555',
+                            light: '#c8c8c8',
+                        }
+                    },
+                    fontFamily: {
+                        display: ['Bebas Neue', 'sans-serif'],
+                        body: ['DM Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background-color: #0a0a0a;
+            color: #c8c8c8;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.5;
+        }
+
+        header {
+            background: #0a0a0a;
+            border-bottom: 1px solid #2a2a2a;
+            position: relative;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, #e8192c, transparent);
+        }
+
+        .logo-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.6rem;
+            letter-spacing: 2px;
+            color: white;
+            text-decoration: none;
+        }
+
+        .logo-accent { color: #e8192c; }
+
+        .logo-sub {
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #555555;
+            margin-top: 1px;
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: 1px solid #2a2a2a;
+            color: #888;
+            padding: 6px 16px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+            font-family: 'DM Sans', sans-serif;
+        }
+        .nav-btn:hover {
+            border-color: #e8192c;
+            color: #e8192c;
+        }
+
+        .section-label {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #555555;
+            margin-bottom: 24px;
+            margin-top: 40px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* Ticket Design */
+        .ticket-container {
+            background: #111111;
+            border: 1px solid #2a2a2a;
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .ticket-header {
+            background: linear-gradient(135deg, #e8192c, #b01020);
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .ticket-header::after {
+            content: '';
+            position: absolute;
+            bottom: -10px; left: 0; right: 0;
+            height: 20px;
+            background: radial-gradient(circle, #111111 10px, transparent 11px);
+            background-size: 30px 20px;
+            background-position: center bottom;
+        }
+
+        .ticket-movie-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2.8rem;
+            color: white;
+            letter-spacing: 2px;
+            margin: 0;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .ticket-body {
+            padding: 40px 30px 30px;
+            position: relative;
+        }
+
+        .ticket-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px dashed #2a2a2a;
+        }
+
+        .ticket-col {
+            flex: 1;
+        }
+        
+        .ticket-col.text-right {
+            text-align: right;
+        }
+
+        .ticket-label {
+            font-size: 10px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 4px;
+        }
+
+        .ticket-value {
+            font-size: 16px;
+            color: white;
+            font-weight: 500;
+        }
+        
+        .ticket-value.large {
+            font-size: 20px;
+            color: #2ecc71;
+            font-family: 'Bebas Neue', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        .ticket-footer {
+            padding: 20px 30px;
+            background: #0a0a0a;
+            border-top: 1px dashed #2a2a2a;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .barcode-area {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 24px;
+            color: #555;
+            letter-spacing: -2px;
+        }
+
+        .status-badge {
+            font-size: 10px;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .status-confirmed {
+            background: rgba(46, 204, 113, 0.15);
+            color: #2ecc71;
+            border: 1px solid rgba(46, 204, 113, 0.3);
+        }
+
+        .status-cancelled {
+            background: rgba(232, 25, 44, 0.15);
+            color: #e8192c;
+            border: 1px solid rgba(232, 25, 44, 0.3);
+        }
+
+        .action-bar {
+            margin-top: 24px;
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+        
+        .btn-action {
+            padding: 10px 24px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-decoration: none;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-cancel {
+            background: rgba(232, 25, 44, 0.1);
+            border: 1px solid rgba(232, 25, 44, 0.3);
+            color: #e8192c;
+        }
+
+        .btn-cancel:hover {
+            background: #e8192c;
+            color: white;
+        }
+        
+        .btn-back {
+            background: transparent;
+            border: 1px solid #3a3a3a;
+            color: #aaa;
+        }
+        
+        .btn-back:hover {
+            background: #2a2a2a;
+            color: white;
+        }
+    </style>
+</head>
+<body style="position: relative; z-index: 1;">
+
+<header class="px-6 py-4">
+    <div class="max-w-5xl mx-auto flex justify-between items-center">
+        <div>
+            <a href="/" class="logo-title">Cinema<span class="logo-accent">Book</span></a>
+            <div class="logo-sub">Cinema Booking System</div>
+        </div>
+        <div class="flex items-center gap-4">
+            <span class="user-name" th:text="${userName}"></span>
+            <a href="/bookings/my" class="nav-btn">My Bookings</a>
+            <a href="/" class="nav-btn">Dashboard</a>
+        </div>
+    </div>
+</header>
+
+<div class="max-w-2xl mx-auto px-4 pb-16" style="position: relative; z-index: 1;">
+
+    <div class="section-label">
+        <a href="/bookings/my" class="text-gray-500 hover:text-white transition-colors">
+            ← Back to Bookings
+        </a>
+        <span>/ Ticket Details</span>
+    </div>
+    
+    <div class="ticket-container">
+        <div class="ticket-header">
+            <div class="ticket-movie-title" th:text="${booking.movieTitle}">Movie Title</div>
+            <div class="text-red-200 text-sm tracking-widest uppercase mt-2">Admit <span th:text="${booking.seats}"></span></div>
+        </div>
+        
+        <div class="ticket-body">
+            <div class="ticket-row">
+                <div class="ticket-col">
+                    <div class="ticket-label">Showtime</div>
+                    <div class="ticket-value" th:text="${booking.showTime}">2026-05-20 18:00</div>
+                </div>
+                <div class="ticket-col text-right">
+                    <div class="ticket-label">Seats</div>
+                    <div class="ticket-value" th:text="${booking.seatNumbers != null && !booking.seatNumbers.empty ? booking.seatNumbers : 'Unassigned'}">A1, A2</div>
+                </div>
+            </div>
+            
+            <div class="ticket-row" style="border-bottom: none; margin-bottom: 0; padding-bottom: 0;">
+                <div class="ticket-col">
+                    <div class="ticket-label">Booking ID</div>
+                    <div class="ticket-value" style="font-family: monospace; font-size: 14px; color: #aaa;" th:text="${booking.bookingId}">ABC-123-XYZ</div>
+                </div>
+                <div class="ticket-col text-right">
+                    <div class="ticket-label">Total Paid</div>
+                    <div class="ticket-value large" th:text="'$' + ${#numbers.formatDecimal(booking.totalPrice, 1, 2)}">$20.00</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="ticket-footer">
+            <div class="barcode-area">|||| ||||| || |||||| |</div>
+            <div th:classappend="${booking.status == 'CONFIRMED' ? 'status-confirmed' : 'status-cancelled'}" 
+                 class="status-badge" th:text="${booking.status}">CONFIRMED</div>
+        </div>
+    </div>
+    
+    <div class="action-bar">
+        <a href="/bookings/my" class="btn-action btn-back">Back to List</a>
+        <a th:if="${booking.status == 'CONFIRMED'}" th:href="@{'/bookings/' + ${booking.bookingId} + '/cancel'}" class="btn-action btn-cancel" onclick="return confirm('Are you sure you want to cancel this ticket?')">Cancel Ticket</a>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
