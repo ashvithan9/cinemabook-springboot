@@ -1,66 +1,68 @@
 package com.cinemabook.booking;
 
-import com.cinemabook.booking.Booking;
 import org.springframework.stereotype.Service;
 
-import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class BookingService {
-
-    private final String FILE_PATH = "src/main/resources/data/bookings.txt";
-
-    public String addBooking(Booking booking) {
-        if (!booking.isValidBooking()) {
-            return "Invalid booking details";
-        }
-
-        try {
-            File file = new File(FILE_PATH);
-            file.getParentFile().mkdirs();
-            file.createNewFile();
-
-            BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_PATH, true));
-            bw.write(booking.toFileString());
-            bw.newLine();
-            bw.close();
-
-            return "Booking added successfully";
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            return "Error saving booking";
-        }
+    
+    private final List<Booking> bookings = new ArrayList<>();
+    
+    public BookingService() {
+        // Add a mock booking for testing
+        bookings.add(new Booking(
+                UUID.randomUUID().toString(),
+                "U1", // mock user ID
+                "M1", // mock movie ID
+                "Dune: Part Two",
+                "2026-05-20 18:00",
+                2,
+                "A1, A2",
+                20.0,
+                "CONFIRMED"
+        ));
     }
 
     public List<Booking> getAllBookings() {
-        List<Booking> bookings = new ArrayList<>();
+        return new ArrayList<>(bookings);
+    }
+    
+    public List<Booking> getBookingsByUserId(String userId) {
+        return bookings.stream()
+                .filter(b -> b.getUserId().equals(userId))
+                .toList();
+    }
 
-        try {
-            File file = new File(FILE_PATH);
-            file.getParentFile().mkdirs();
-            file.createNewFile();
+    public Booking getBookingById(String bookingId) {
+        return bookings.stream()
+                .filter(b -> b.getBookingId().equals(bookingId))
+                .findFirst()
+                .orElse(null);
+    }
 
-            BufferedReader br = new BufferedReader(new FileReader(FILE_PATH));
-            String line;
+    public void createBooking(Booking booking) {
+        booking.setBookingId(UUID.randomUUID().toString());
+        booking.setStatus("CONFIRMED");
+        bookings.add(booking);
+    }
 
-            while ((line = br.readLine()) != null) {
-                Booking booking = Booking.fromFileString(line);
-
-                if (booking != null) {
-                    bookings.add(booking);
-                }
-            }
-
-            br.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
+    public void updateBooking(Booking updatedBooking) {
+        Booking existingBooking = getBookingById(updatedBooking.getBookingId());
+        if (existingBooking != null) {
+            existingBooking.setMovieId(updatedBooking.getMovieId());
+            existingBooking.setMovieTitle(updatedBooking.getMovieTitle());
+            existingBooking.setShowTime(updatedBooking.getShowTime());
+            existingBooking.setSeats(updatedBooking.getSeats());
+            existingBooking.setSeatNumbers(updatedBooking.getSeatNumbers());
+            existingBooking.setTotalPrice(updatedBooking.getTotalPrice());
+            existingBooking.setStatus(updatedBooking.getStatus());
         }
+    }
 
-        return bookings;
+    public void deleteBooking(String bookingId) {
+        bookings.removeIf(b -> b.getBookingId().equals(bookingId));
     }
 }
-
