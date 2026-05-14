@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8"><title>Book Seats — CinemaBook</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--gold:#C9A84C;--bg:#080808;--card:#111;--bd:#1e1e1e;--mu:#555;--li:#aaa}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:#fff;min-height:100vh}
+nav{display:flex;align-items:center;padding:0 40px;height:62px;background:#080808f0;border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:100}
+.logo{display:flex;align-items:center;gap:7px;text-decoration:none;margin-right:auto}
+.lb{background:var(--gold);color:#000;font-size:10px;font-weight:700;padding:3px 6px;border-radius:3px}
+.lt{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:.12em;color:#fff}
+.nl{font-size:13px;color:var(--li);padding:7px 12px;border-radius:6px;text-decoration:none}
+.nl:hover{color:#fff}
+.nr{display:flex;align-items:center;gap:10px;margin-left:20px}
+.lo{font-size:12px;color:var(--mu);padding:5px 10px;border:1px solid var(--bd);border-radius:6px;text-decoration:none}
+.lo:hover{border-color:#444;color:var(--li)}
+.wp{max-width:800px;margin:50px auto;padding:0 24px}
+.bk{display:inline-flex;align-items:center;gap:5px;font-size:13px;color:var(--mu);text-decoration:none;margin-bottom:20px;transition:color .15s}
+.bk:hover{color:var(--gold)}
+.pt{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:.04em;margin-bottom:24px}
+.layout{display:grid;grid-template-columns:1fr 300px;gap:24px;align-items:start}
+.show-summary{background:var(--card);border:1px solid var(--bd);border-radius:11px;overflow:hidden;position:relative}
+.show-summary::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gold)}
+.ss-title{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--mu);padding:18px 20px 12px}
+.row{display:flex;justify-content:space-between;align-items:center;padding:9px 20px;border-bottom:1px solid #111}
+.row:last-child{border-bottom:none}
+.rk{font-size:12px;color:var(--mu)}
+.rv{font-size:13px;color:var(--li);font-weight:500}
+.rv.gold{color:var(--gold);font-size:18px;font-family:'Bebas Neue',sans-serif;letter-spacing:.04em}
+.seat-form{background:var(--card);border:1px solid var(--bd);border-radius:11px;padding:24px;position:sticky;top:80px;overflow:hidden;position:relative}
+.seat-form::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gold)}
+.ft{font-size:13px;font-weight:500;color:#fff;margin-bottom:18px}
+.screen{background:#1a1a0a;border:1px solid var(--gold);border-radius:4px;text-align:center;padding:6px;font-size:10px;color:var(--gold);letter-spacing:.1em;margin-bottom:16px}
+.seat-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:5px;margin-bottom:18px}
+.seat{width:28px;height:22px;border-radius:4px 4px 2px 2px;background:#1a1a1a;border:1px solid #252525;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--mu)}
+.seat.sel{background:var(--gold);color:#000;border-color:var(--gold)}
+.seat.taken{background:#1a0808;border-color:#2a1010;cursor:not-allowed;color:#333}
+.lbl{display:block;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--mu);margin-bottom:7px}
+.inp{width:100%;background:#0a0a0a;border:1px solid #252525;border-radius:7px;padding:10px 13px;font-size:13px;color:#e0e0e0;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .15s}
+.inp:focus{border-color:var(--gold);box-shadow:0 0 0 3px #C9A84C18}
+.total-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-top:1px solid var(--bd);margin-top:12px}
+.total-lbl{font-size:12px;color:var(--mu)}
+.total-val{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--gold);letter-spacing:.04em}
+.bg{width:100%;background:var(--gold);color:#000;border:none;padding:13px;border-radius:7px;font-size:14px;font-family:'DM Sans',sans-serif;font-weight:500;cursor:pointer;margin-top:14px;transition:background .15s;display:flex;align-items:center;justify-content:center;gap:6px}
+.bg:hover{background:#d4b560}
+footer{border-top:1px solid var(--bd);padding:20px 40px;display:flex;align-items:center;justify-content:space-between;margin-top:60px}
+.fl{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:.12em;color:var(--mu)}
+.fl span{color:var(--gold)}
+</style>
+</head>
+<body>
+<nav>
+  <a href="/" class="logo"><span class="lb">CINEMA</span><span class="lt">BOOK</span></a>
+  <div style="display:flex;align-items:center;gap:2px">
+    <a href="/movies" class="nl">Movies</a>
+    <a href="/bookings/my" class="nl">My Bookings</a>
+  </div>
+  <div class="nr"><a href="/logout" class="lo">Logout</a></div>
+</nav>
+
+<div class="wp">
+  <a href="/movies" class="bk">← Back to movies</a>
+  <div class="pt">Book Your Seats</div>
+
+  <div class="layout" th:if="${show!=null}">
+    <div class="show-summary">
+      <div class="ss-title">Show details</div>
+      <div class="row">
+        <span class="rk">Movie</span>
+        <span class="rv" style="color:#fff" th:text="${show.movieTitle}">—</span>
+      </div>
+      <div class="row">
+        <span class="rk">Date &amp; Time</span>
+        <span class="rv" th:text="${show.date}+' at '+${show.time}">—</span>
+      </div>
+      <div class="row">
+        <span class="rk">Hall</span>
+        <span class="rv" th:text="${show.hall}">—</span>
+      </div>
+      <div class="row">
+        <span class="rk">Price per seat</span>
+        <span class="rv gold" th:text="'$'+${show.price}">—</span>
+      </div>
+      <div class="row">
+        <span class="rk">Available</span>
+        <span class="rv" th:text="${show.availableSeats}+' seats'">—</span>
+      </div>
+    </div>
+
+    <div class="seat-form">
+      <div class="screen">SCREEN</div>
+      <div class="seat-grid" id="seatGrid"></div>
+
+      <form action="/bookings" method="post">
+        <input type="hidden" name="showId" th:value="${show.showId}"/>
+        <label class="lbl">Number of seats</label>
+        <input class="inp" type="number" name="seats" id="seatsInput"
+               min="1" th:max="${show.availableSeats}" value="1" required
+               oninput="updateTotal()"/>
+        <div class="total-row">
+          <span class="total-lbl">Total</span>
+          <span class="total-val" id="totalAmt">$0.00</span>
+        </div>
+        <button type="submit" class="bg">🔒 Confirm &amp; Pay</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<footer><div class="fl"><span>CINEMA</span>BOOK</div><div style="font-size:11px;color:#333">SE1020 — OOP Project</div></footer>
+<script th:inline="javascript">
+const price=/*[[${show.price}]]*/'0';
+const total=/*[[${show.totalSeats}]]*/100;
+const avail=/*[[${show.availableSeats}]]*/100;
+const taken=total-avail;
+const grid=document.getElementById('seatGrid');
+for(let i=0;i<total;i++){
+  const s=document.createElement('div');
+  s.className='seat'+(i<taken?' taken':'');
+  s.textContent=(i+1);
+  grid.appendChild(s);
+}
+function updateTotal(){
+  const n=parseInt(document.getElementById('seatsInput').value)||0;
+  document.getElementById('totalAmt').textContent='$'+(n*parseFloat(price)).toFixed(2);
+}
+updateTotal();
+</script>
+</body>
+</html>
