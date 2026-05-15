@@ -1,128 +1,113 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Payments - CinemaBook</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        cinema: { red: '#e8192c', darkred: '#b01020', black: '#0a0a0a', card: '#111111', border: '#2a2a2a', muted: '#555555', light: '#c8c8c8' }
-                    },
-                    fontFamily: { display: ['Bebas Neue', 'sans-serif'], body: ['DM Sans', 'sans-serif'] }
-                }
-            }
-        }
-    </script>
+    <meta charset="UTF-8"><title>Payments — CinemaBook</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'DM Sans', sans-serif; background-color: #0a0a0a; color: #c8c8c8; }
-        body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; opacity: 0.5; }
-        header { background: #0a0a0a; border-bottom: 1px solid #2a2a2a; position: relative; }
-        header::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; background: linear-gradient(90deg, #e8192c, transparent); }
-        .logo-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 2px; color: white; }
-        .logo-accent { color: #e8192c; }
-        .logo-sub { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: #555; margin-top: 1px; }
-        .nav-btn { background: transparent; border: 1px solid #2a2a2a; color: #888; padding: 6px 16px; border-radius: 6px; font-size: 12px; cursor: pointer; text-decoration: none; transition: all 0.2s; }
-        .nav-btn:hover { border-color: #e8192c; color: #e8192c; }
-        .admin-badge { background: linear-gradient(135deg, #e8192c, #b01020); color: white; padding: 4px 14px; border-radius: 20px; font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; display: flex; align-items: center; gap: 6px; }
-        .section-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 3px; color: #555; margin-bottom: 16px; margin-top: 40px; }
-        .stat-card { background: #111; border: 1px solid #2a2a2a; border-radius: 12px; padding: 24px; }
-        .stat-value { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; color: white; }
-        .stat-label { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: #555; margin-top: 4px; }
-        .table-card { background: #111; border: 1px solid #2a2a2a; border-radius: 12px; overflow: hidden; }
-        table { width: 100%; border-collapse: collapse; }
-        th { background: #0a0a0a; color: #555; font-size: 10px; text-transform: uppercase; letter-spacing: 2px; padding: 14px 16px; text-align: left; border-bottom: 1px solid #2a2a2a; }
-        td { padding: 14px 16px; border-bottom: 1px solid #1a1a1a; font-size: 13px; color: #c8c8c8; }
-        tr:last-child td { border-bottom: none; }
-        tr:hover td { background: #161616; }
-        .badge-completed { background: rgba(34,197,94,0.1); color: #22c55e; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
-        .badge-pending { background: rgba(234,179,8,0.1); color: #eab308; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
-        .badge-failed { background: rgba(232,25,44,0.1); color: #e8192c; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
-        .action-btn { padding: 5px 12px; border-radius: 5px; font-size: 11px; font-weight: 600; text-decoration: none; border: none; cursor: pointer; }
-        .btn-view { background: #1a1a1a; color: #c8c8c8; border: 1px solid #2a2a2a; }
-        .btn-view:hover { border-color: #e8192c; color: #e8192c; }
-        .btn-edit { background: rgba(232,25,44,0.1); color: #e8192c; border: 1px solid rgba(232,25,44,0.2); }
-        .btn-delete { background: transparent; color: #e8192c; border: 1px solid #e8192c; }
-        .btn-delete:hover { background: #e8192c; color: white; }
-        .search-input { background: #111; border: 1px solid #2a2a2a; color: #c8c8c8; padding: 10px 14px; border-radius: 8px; font-size: 13px; width: 280px; font-family: 'DM Sans', sans-serif; }
-        .search-input:focus { outline: none; border-color: #e8192c; }
-        .card-chip { display: inline-flex; align-items: center; gap: 6px; background: #1a1a1a; border: 1px solid #2a2a2a; padding: 3px 10px; border-radius: 6px; font-size: 11px; }
-        .success-banner { background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2); color: #22c55e; padding: 12px 16px; border-radius: 8px; font-size: 13px; margin-bottom: 24px; }
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+        :root{--gold:#C9A84C;--gold-dim:#C9A84C33;--bg:#080808;--card:#111;--border:#1e1e1e;--muted:#555;--light:#aaa}
+        body{font-family:'DM Sans',sans-serif;background:var(--bg);color:#fff;min-height:100vh}
+        nav{display:flex;align-items:center;padding:0 48px;height:64px;background:#080808ee;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;backdrop-filter:blur(10px)}
+        .logo{display:flex;align-items:center;gap:8px;text-decoration:none;margin-right:auto}
+        .logo-badge{background:var(--gold);color:#000;font-size:10px;font-weight:700;padding:3px 7px;border-radius:3px;letter-spacing:.1em}
+        .logo-text{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.15em;color:#fff}
+        .nav-link{font-size:13px;color:var(--light);padding:8px 14px;border-radius:6px;text-decoration:none;transition:color .2s,background .2s;position:relative}
+        .nav-link:hover{color:#fff;background:#ffffff08}
+        .nav-link.active{color:#fff}
+        .nav-link.active::after{content:'';position:absolute;bottom:-1px;left:14px;right:14px;height:2px;background:var(--gold);border-radius:2px}
+        .nav-link.admin{color:var(--muted);font-size:12px}
+        .nav-divider{width:1px;height:16px;background:var(--border);margin:0 6px}
+        .nav-right{display:flex;align-items:center;gap:12px;margin-left:24px}
+        .nav-avatar{width:32px;height:32px;border-radius:50%;background:#1e1a0a;border:1.5px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--gold);text-decoration:none}
+        .nav-logout{font-size:12px;color:var(--muted);padding:5px 12px;border:1px solid var(--border);border-radius:6px;text-decoration:none}
+        .nav-logout:hover{border-color:#444;color:var(--light)}
+        .wrap{max-width:1100px;margin:0 auto;padding:40px 48px 80px}
+        .top-bar{display:flex;align-items:center;gap:14px;margin-bottom:28px}
+        .page-title{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:.05em;margin-right:auto}
+        .btn-gold{background:var(--gold);color:#000;border:none;padding:9px 20px;border-radius:7px;font-size:13px;font-family:'DM Sans',sans-serif;font-weight:500;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:background .2s}
+        .btn-gold:hover{background:#d4b560}
+        .success-banner{background:#0a1a0a;border:1px solid #4ade8044;color:#4ade80;border-radius:7px;padding:12px 16px;font-size:13px;margin-bottom:20px}
+        .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:28px}
+        .stat{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px 20px}
+        .stat-val{font-family:'Bebas Neue',sans-serif;font-size:30px;color:#fff;letter-spacing:.05em}
+        .stat-val.gold{color:var(--gold)}
+        .stat-lbl{font-size:11px;color:var(--muted);margin-top:2px}
+        .table-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;position:relative}
+        .table-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gold)}
+        table{width:100%;border-collapse:collapse}
+        thead th{background:#0d0d0d;color:var(--muted);font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;padding:14px 16px;text-align:left;border-bottom:1px solid var(--border)}
+        tbody td{padding:13px 16px;font-size:13px;color:var(--light);border-bottom:1px solid #141414}
+        tbody tr:last-child td{border-bottom:none}
+        tbody tr:hover td{background:#141414}
+        .badge{display:inline-block;padding:3px 8px;border-radius:99px;font-size:10px;font-weight:500}
+        .badge-completed{background:#0a1a0a;color:#4ade80;border:1px solid #4ade8033}
+        .badge-pending{background:#1a1a0a;color:var(--gold);border:1px solid var(--gold-dim)}
+        .badge-failed{background:#1a0a0a;color:#e84a4a;border:1px solid #e84a4a33}
+        .card-chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--light)}
+        .actions{display:flex;gap:6px}
+        .btn-sm{background:transparent;border:1px solid #2a2a2a;color:var(--light);border-radius:6px;padding:5px 10px;font-size:11px;text-decoration:none;display:inline-flex;align-items:center;transition:all .2s}
+        .btn-sm:hover{border-color:var(--gold);color:var(--gold)}
+        .btn-del{background:transparent;border:1px solid #2a2a2a;color:var(--muted);border-radius:6px;padding:5px 10px;font-size:11px;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .2s}
+        .btn-del:hover{border-color:#e84a4a;color:#e84a4a}
+        .empty{text-align:center;padding:60px;color:var(--muted);font-size:14px}
+        footer{border-top:1px solid var(--border);padding:24px 48px;display:flex;align-items:center;justify-content:space-between;margin-top:40px}
+        .footer-logo{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:.15em;color:var(--muted)}
+        .footer-logo span{color:var(--gold)}
     </style>
 </head>
-<body style="position:relative; z-index:1;">
-
-<header class="px-6 py-4">
-    <div class="max-w-6xl mx-auto flex justify-between items-center">
-        <div>
-            <div class="logo-title">Cinema<span class="logo-accent">Book</span></div>
-            <div class="logo-sub">Cinema Booking System</div>
-        </div>
-        <div class="flex items-center gap-4">
-            <div th:if="${userRole == 'ADMIN'}" class="admin-badge">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M12 2L3 7l9 5 9-5-9-5z"/><path d="M3 12l9 5 9-5"/><path d="M3 17l9 5 9-5"/>
-                </svg>
-                Admin
-            </div>
-            <span style="font-size:13px; color:#888;" th:text="${userName}"></span>
-            <a href="/" class="nav-btn">← Home</a>
-            <a href="/logout" class="nav-btn">Logout</a>
-        </div>
+<body>
+<nav>
+    <a href="/" class="logo"><span class="logo-badge">CINEMA</span><span class="logo-text">BOOK</span></a>
+    <div style="display:flex;align-items:center;gap:2px">
+        <a href="/movies" class="nav-link">Movies</a>
+        <a href="/bookings/my" class="nav-link">My Bookings</a>
+        <a href="/payments/my" class="nav-link"
+           th:class="${userRole != 'ADMIN'} ? 'nav-link active' : 'nav-link'">My Payments</a>
+        <a href="/feedback" class="nav-link">Feedback</a>
+        <div class="nav-divider" th:if="${userRole == 'ADMIN'}"></div>
+        <a href="/users" class="nav-link admin" th:if="${userRole == 'ADMIN'}">Users</a>
+        <a href="/payments" class="nav-link admin active" th:if="${userRole == 'ADMIN'}">All Payments</a>
     </div>
-</header>
+    <div class="nav-right">
+        <a href="/profile" class="nav-avatar">◉</a>
+        <a href="/logout" class="nav-logout">Logout</a>
+    </div>
+</nav>
 
-<div class="max-w-6xl mx-auto px-4 pb-16" style="position:relative; z-index:1;">
+<div class="wrap">
+    <div th:if="${param.success}" class="success-banner">Payment processed successfully!</div>
 
-    <!-- Success banner -->
-    <div th:if="${param.success}" class="success-banner" style="margin-top:24px;">
-        ✅ Payment processed successfully.
+    <div class="top-bar">
+        <div class="page-title" th:text="${userRole == 'ADMIN'} ? 'All Payments' : 'My Payments'">Payments</div>
+        <a href="/payments/new" class="btn-gold">+ New payment</a>
     </div>
 
-    <!-- Admin stats -->
-    <div th:if="${userRole == 'ADMIN'}">
-        <p class="section-label">Payment Overview</p>
-        <div class="grid grid-cols-4 gap-4" style="margin-bottom:32px;">
-            <div class="stat-card">
-                <div class="stat-value" th:text="'$' + ${#numbers.formatDecimal(totalRevenue, 1, 2)}"></div>
-                <div class="stat-label">Total Revenue</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" th:text="${completedCount}"></div>
-                <div class="stat-label">Completed</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" th:text="${pendingCount}"></div>
-                <div class="stat-label">Pending</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" th:text="${totalCount}"></div>
-                <div class="stat-label">Total Payments</div>
-            </div>
+    <div class="stats" th:if="${userRole == 'ADMIN'}">
+        <div class="stat">
+            <div class="stat-val gold" th:text="'$' + ${#numbers.formatDecimal(totalRevenue,1,2)}">$0.00</div>
+            <div class="stat-lbl">Total revenue</div>
+        </div>
+        <div class="stat">
+            <div class="stat-val" th:text="${completedCount}">0</div>
+            <div class="stat-lbl">Completed</div>
+        </div>
+        <div class="stat">
+            <div class="stat-val" th:text="${pendingCount}">0</div>
+            <div class="stat-lbl">Pending</div>
+        </div>
+        <div class="stat">
+            <div class="stat-val" th:text="${totalCount}">0</div>
+            <div class="stat-lbl">Total payments</div>
         </div>
     </div>
 
-    <!-- Title bar -->
-    <div class="flex justify-between items-center" style="margin-bottom:20px; margin-top: 16px;">
-        <div>
-            <h1 style="font-family:'Bebas Neue',sans-serif; font-size:1.8rem; color:white; letter-spacing:1px;"
-                th:text="${userRole == 'ADMIN'} ? 'All Payments' : 'My Payments'"></h1>
-        </div>
-        <input type="text" class="search-input" placeholder="Search payments..." id="searchInput" onkeyup="filterTable()"/>
-    </div>
-
-    <!-- Table -->
     <div class="table-card">
-        <table id="paymentTable">
+        <table>
             <thead>
             <tr>
                 <th>Payment ID</th>
                 <th>Booking</th>
-                <th th:if="${userRole == 'ADMIN'}">User ID</th>
+                <th th:if="${userRole == 'ADMIN'}">User</th>
                 <th>Amount</th>
                 <th>Card</th>
                 <th>Status</th>
@@ -132,48 +117,43 @@
             </thead>
             <tbody>
             <tr th:each="payment : ${payments}">
-                <td style="color:#555; font-size:11px;" th:text="${payment.paymentId}"></td>
-                <td th:text="${payment.bookingId}"></td>
-                <td th:if="${userRole == 'ADMIN'}" th:text="${payment.userId}"></td>
-                <td style="color:white; font-weight:600;" th:text="'$' + ${payment.amount}"></td>
+                <td style="font-family:monospace;font-size:11px;color:var(--muted)" th:text="${payment.paymentId}"></td>
+                <td style="font-size:12px" th:text="${payment.bookingId}"></td>
+                <td th:if="${userRole == 'ADMIN'}" style="font-size:12px;color:var(--muted)" th:text="${payment.userId}"></td>
+                <td style="color:#fff;font-weight:500" th:text="'$' + ${payment.amount}"></td>
                 <td>
-                        <span class="card-chip">
-                            <span th:text="${payment.cardType}"></span>
-                            ••••<span th:text="${payment.cardLastFour}"></span>
-                        </span>
+                    <div class="card-chip">
+                        <span th:text="${payment.cardType}"></span>
+                        <span style="color:var(--muted)">••••<span th:text="${payment.cardLastFour}"></span></span>
+                    </div>
                 </td>
                 <td>
-                        <span th:classappend="${payment.status == 'COMPLETED'} ? 'badge-completed' : (${payment.status == 'PENDING'} ? 'badge-pending' : 'badge-failed')"
-                              th:text="${payment.status}"></span>
+            <span th:class="${payment.status == 'COMPLETED'} ? 'badge badge-completed' : (${payment.status == 'PENDING'} ? 'badge badge-pending' : 'badge badge-failed')"
+                  th:text="${payment.status}"></span>
                 </td>
-                <td style="color:#555; font-size:12px;" th:text="${payment.paymentDate}"></td>
+                <td style="font-size:11px;color:var(--muted)" th:text="${payment.paymentDate}"></td>
                 <td>
-                    <div style="display:flex; gap:6px;">
-                        <a th:href="@{/payments/{id}(id=${payment.paymentId})}" class="action-btn btn-view">View</a>
-                        <a th:if="${userRole == 'ADMIN'}" th:href="@{/payments/{id}/edit(id=${payment.paymentId})}" class="action-btn btn-edit">Edit</a>
+                    <div class="actions">
+                        <a th:href="@{/payments/{id}(id=${payment.paymentId})}" class="btn-sm">View</a>
+                        <a th:if="${userRole == 'ADMIN'}" th:href="@{/payments/{id}/edit(id=${payment.paymentId})}" class="btn-sm">Edit</a>
                         <form th:if="${userRole == 'ADMIN'}" th:action="@{/payments/{id}/delete(id=${payment.paymentId})}" method="post"
                               onsubmit="return confirm('Delete this payment?')">
-                            <button type="submit" class="action-btn btn-delete">Delete</button>
+                            <button type="submit" class="btn-del">Del</button>
                         </form>
                     </div>
                 </td>
             </tr>
+            <tr th:if="${#lists.isEmpty(payments)}">
+                <td colspan="8" class="empty">No payments found.</td>
+            </tr>
             </tbody>
         </table>
-        <div th:if="${#lists.isEmpty(payments)}"
-             style="text-align:center; padding:48px; color:#555; font-size:14px;">
-            No payments found.
-        </div>
     </div>
 </div>
 
-<script>
-    function filterTable() {
-        const input = document.getElementById("searchInput").value.toLowerCase();
-        document.querySelectorAll("#paymentTable tbody tr").forEach(row => {
-            row.style.display = row.innerText.toLowerCase().includes(input) ? "" : "none";
-        });
-    }
-</script>
+<footer>
+    <div class="footer-logo"><span>CINEMA</span>BOOK</div>
+    <div style="font-size:11px;color:#333">SE1020 — Object Oriented Programming</div>
+</footer>
 </body>
 </html>

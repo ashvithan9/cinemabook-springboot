@@ -1,1 +1,2 @@
 paymentId,userId,bookingId,amount,status,paymentDate,cardHolderName,cardLastFour,cardType,paymentMethod
+PAY1778672310031,ADMIN001,BKG1778672281314,12.50,COMPLETED,2026-05-13 17:08,"RASHINDU",7643,VISA,DEBIT

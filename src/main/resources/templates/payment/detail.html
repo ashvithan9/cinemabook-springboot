@@ -1,113 +1,128 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Payment Detail - CinemaBook</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <meta charset="UTF-8"><title>Receipt — CinemaBook</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'DM Sans', sans-serif; background-color: #0a0a0a; color: #c8c8c8; }
-        body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; opacity: 0.5; }
-        header { background: #0a0a0a; border-bottom: 1px solid #2a2a2a; position: relative; }
-        header::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; background: linear-gradient(90deg, #e8192c, transparent); }
-        .logo-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 2px; color: white; }
-        .logo-accent { color: #e8192c; }
-        .logo-sub { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: #555; margin-top: 1px; }
-        .nav-btn { background: transparent; border: 1px solid #2a2a2a; color: #888; padding: 6px 16px; border-radius: 6px; font-size: 12px; cursor: pointer; text-decoration: none; transition: all 0.2s; }
-        .nav-btn:hover { border-color: #e8192c; color: #e8192c; }
-        .detail-card { background: #111; border: 1px solid #2a2a2a; border-radius: 14px; padding: 36px; }
-        .receipt-header { text-align: center; padding-bottom: 24px; border-bottom: 1px dashed #2a2a2a; margin-bottom: 28px; }
-        .receipt-amount { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; color: white; }
-        .receipt-amount span { color: #e8192c; }
-        .badge-completed { background: rgba(34,197,94,0.1); color: #22c55e; padding: 5px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-block; }
-        .badge-pending { background: rgba(234,179,8,0.1); color: #eab308; padding: 5px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-block; }
-        .badge-failed { background: rgba(232,25,44,0.1); color: #e8192c; padding: 5px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-block; }
-        .detail-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #1a1a1a; }
-        .detail-row:last-child { border-bottom: none; }
-        .detail-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: #555; }
-        .detail-value { font-size: 14px; color: #c8c8c8; font-weight: 500; }
-        .card-display { background: #0a0a0a; border: 1px solid #2a2a2a; border-radius: 8px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; }
-        .card-type { font-size: 12px; font-weight: 600; color: #e8192c; }
-        .card-num { font-family: 'Courier New', monospace; font-size: 13px; color: #888; }
-        .actions { display: flex; gap: 12px; margin-top: 28px; }
-        .btn-edit { padding: 10px 24px; background: rgba(232,25,44,0.1); color: #e8192c; border: 1px solid rgba(232,25,44,0.3); border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 600; }
-        .btn-delete { padding: 10px 24px; background: transparent; color: #e8192c; border: 1px solid #e8192c; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; }
-        .btn-delete:hover { background: #e8192c; color: white; }
-        .section-title { font-family: 'Bebas Neue', sans-serif; font-size: 1rem; color: #555; letter-spacing: 2px; margin: 24px 0 12px; }
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+        :root{--gold:#C9A84C;--gold-dim:#C9A84C33;--bg:#080808;--card:#111;--border:#1e1e1e;--muted:#555;--light:#aaa}
+        body{font-family:'DM Sans',sans-serif;background:var(--bg);color:#fff;min-height:100vh}
+        nav{display:flex;align-items:center;padding:0 48px;height:64px;background:#080808ee;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;backdrop-filter:blur(10px)}
+        .logo{display:flex;align-items:center;gap:8px;text-decoration:none;margin-right:auto}
+        .logo-badge{background:var(--gold);color:#000;font-size:10px;font-weight:700;padding:3px 7px;border-radius:3px;letter-spacing:.1em}
+        .logo-text{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.15em;color:#fff}
+        .nav-link{font-size:13px;color:var(--light);padding:8px 14px;border-radius:6px;text-decoration:none;transition:color .2s}
+        .nav-link:hover{color:#fff}
+        .nav-right{display:flex;align-items:center;gap:12px;margin-left:24px}
+        .nav-logout{font-size:12px;color:var(--muted);padding:5px 12px;border:1px solid var(--border);border-radius:6px;text-decoration:none}
+        .nav-logout:hover{border-color:#444;color:var(--light)}
+        .wrap{max-width:560px;margin:60px auto;padding:0 24px}
+        .back{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);text-decoration:none;margin-bottom:24px;transition:color .2s}
+        .back:hover{color:var(--gold)}
+        .receipt{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+        .receipt-top{padding:32px 32px 24px;border-bottom:1px solid var(--border);text-align:center;position:relative}
+        .receipt-top::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gold)}
+        .receipt-icon{width:56px;height:56px;border-radius:50%;background:#0a1a0a;border:2px solid #4ade8033;display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 16px}
+        .receipt-amount{font-family:'Bebas Neue',sans-serif;font-size:52px;color:var(--gold);letter-spacing:.05em;margin-bottom:8px}
+        .badge{display:inline-block;padding:4px 12px;border-radius:99px;font-size:12px;font-weight:500}
+        .badge-completed{background:#0a1a0a;color:#4ade80;border:1px solid #4ade8033}
+        .badge-pending{background:#1a1a0a;color:var(--gold);border:1px solid var(--gold-dim)}
+        .badge-failed{background:#1a0a0a;color:#e84a4a;border:1px solid #e84a4a33}
+        .receipt-date{font-size:12px;color:var(--muted);margin-top:8px}
+        .receipt-body{padding:24px 32px}
+        .row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid #141414}
+        .row:last-child{border-bottom:none}
+        .row-key{font-size:12px;color:var(--muted)}
+        .row-val{font-size:13px;color:var(--light);font-weight:500;text-align:right}
+        .row-val.mono{font-family:monospace;font-size:11px;color:var(--muted)}
+        .cc-mini{display:inline-flex;align-items:center;gap:8px}
+        .cc-type{font-size:11px;font-weight:600;color:var(--gold)}
+        .cc-num{font-family:monospace;font-size:12px;color:var(--muted)}
+        .divider{height:1px;background:var(--border);margin:8px 0;border:none}
+        .receipt-footer{padding:20px 32px;background:#0a0a0a;display:flex;gap:10px;justify-content:center}
+        .btn-outline{background:transparent;color:var(--light);border:1px solid #2a2a2a;padding:9px 20px;border-radius:7px;font-size:13px;font-family:'DM Sans',sans-serif;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:border-color .2s,color .2s}
+        .btn-outline:hover{border-color:var(--gold);color:var(--gold)}
+        .btn-danger{background:transparent;color:#e84a4a;border:1px solid #e84a4a44;padding:9px 20px;border-radius:7px;font-size:13px;font-family:'DM Sans',sans-serif;cursor:pointer;transition:background .2s}
+        .btn-danger:hover{background:#1a0a0a}
+        .not-found{text-align:center;padding:80px 40px;color:var(--muted)}
+        footer{border-top:1px solid var(--border);padding:24px 48px;display:flex;align-items:center;justify-content:space-between;margin-top:60px}
+        .footer-logo{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:.15em;color:var(--muted)}
+        .footer-logo span{color:var(--gold)}
     </style>
 </head>
-<body style="position:relative; z-index:1;">
-
-<header class="px-6 py-4">
-    <div class="max-w-2xl mx-auto flex justify-between items-center">
-        <div>
-            <div class="logo-title">Cinema<span class="logo-accent">Book</span></div>
-            <div class="logo-sub">Payment Receipt</div>
-        </div>
-        <div class="flex items-center gap-4">
-            <a th:href="${userRole == 'ADMIN'} ? '/payments' : '/payments/my'" class="nav-btn">← Back</a>
-            <a href="/logout" class="nav-btn">Logout</a>
-        </div>
+<body>
+<nav>
+    <a href="/" class="logo"><span class="logo-badge">CINEMA</span><span class="logo-text">BOOK</span></a>
+    <div style="display:flex;align-items:center;gap:2px">
+        <a th:href="${userRole == 'ADMIN'} ? '/payments' : '/payments/my'" class="nav-link">← Payments</a>
     </div>
-</header>
+    <div class="nav-right">
+        <a href="/profile" class="nav-avatar" style="width:32px;height:32px;border-radius:50%;background:#1e1a0a;border:1.5px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--gold);text-decoration:none">◉</a>
+        <a href="/logout" class="nav-logout">Logout</a>
+    </div>
+</nav>
 
-<div class="max-w-2xl mx-auto px-4 py-10" style="position:relative; z-index:1;">
-    <div class="detail-card" th:if="${payment != null}">
+<div class="wrap">
+    <a th:href="${userRole == 'ADMIN'} ? '/payments' : '/payments/my'" class="back">← Payments</a>
 
-        <!-- Receipt header -->
-        <div class="receipt-header">
-            <div style="font-size:11px; text-transform:uppercase; letter-spacing:3px; color:#555; margin-bottom:12px;">Payment Receipt</div>
-            <div class="receipt-amount"><span>$</span><span th:text="${payment.amount}"></span></div>
-            <div style="margin-top:12px;">
-                <span th:classappend="${payment.status == 'COMPLETED'} ? 'badge-completed' : (${payment.status == 'PENDING'} ? 'badge-pending' : 'badge-failed')"
-                      th:text="${payment.status}"></span>
+    <div class="receipt" th:if="${payment != null}">
+        <div class="receipt-top">
+            <div class="receipt-icon">✓</div>
+            <div class="receipt-amount" th:text="'$' + ${payment.amount}">$0.00</div>
+            <span th:class="${payment.status == 'COMPLETED'} ? 'badge badge-completed' : (${payment.status == 'PENDING'} ? 'badge badge-pending' : 'badge badge-failed')"
+                  th:text="${payment.status}">COMPLETED</span>
+            <div class="receipt-date" th:text="${payment.paymentDate}">2024-01-01</div>
+        </div>
+
+        <div class="receipt-body">
+            <div class="row">
+                <span class="row-key">Payment ID</span>
+                <span class="row-val mono" th:text="${payment.paymentId}">PAY123</span>
             </div>
-            <div style="font-size:12px; color:#555; margin-top:10px;" th:text="${payment.paymentDate}"></div>
-        </div>
-
-        <!-- Details -->
-        <div class="section-title">Transaction Details</div>
-        <div class="detail-row">
-            <span class="detail-label">Payment ID</span>
-            <span class="detail-value" style="font-size:12px; color:#555;" th:text="${payment.paymentId}"></span>
-        </div>
-        <div class="detail-row">
-            <span class="detail-label">Booking ID</span>
-            <span class="detail-value" th:text="${payment.bookingId}"></span>
-        </div>
-        <div th:if="${userRole == 'ADMIN'}" class="detail-row">
-            <span class="detail-label">User ID</span>
-            <span class="detail-value" th:text="${payment.userId}"></span>
-        </div>
-        <div class="detail-row">
-            <span class="detail-label">Payment Method</span>
-            <span class="detail-value" th:text="${payment.paymentMethod}"></span>
-        </div>
-
-        <div class="section-title">Card Details</div>
-        <div class="card-display">
-            <div>
-                <div class="card-type" th:text="${payment.cardType}"></div>
-                <div class="card-num">•••• •••• •••• <span th:text="${payment.cardLastFour}"></span></div>
+            <div class="row">
+                <span class="row-key">Booking reference</span>
+                <span class="row-val" th:text="${payment.bookingId}">BK001</span>
             </div>
-            <div style="margin-left:auto; font-size:12px; color:#555;" th:text="${payment.cardHolderName}"></div>
+            <div class="row" th:if="${userRole == 'ADMIN'}">
+                <span class="row-key">User ID</span>
+                <span class="row-val mono" th:text="${payment.userId}">USR123</span>
+            </div>
+            <div class="row">
+                <span class="row-key">Payment method</span>
+                <span class="row-val" th:text="${payment.paymentMethod}">CREDIT</span>
+            </div>
+            <div class="row">
+                <span class="row-key">Card</span>
+                <div class="cc-mini">
+                    <span class="cc-type" th:text="${payment.cardType}">VISA</span>
+                    <span class="cc-num">•••• •••• •••• <span th:text="${payment.cardLastFour}">0000</span></span>
+                </div>
+            </div>
+            <div class="row">
+                <span class="row-key">Cardholder</span>
+                <span class="row-val" th:text="${payment.cardHolderName}">—</span>
+            </div>
         </div>
 
-        <!-- Admin actions -->
-        <div th:if="${userRole == 'ADMIN'}" class="actions">
-            <a th:href="@{/payments/{id}/edit(id=${payment.paymentId})}" class="btn-edit">Edit Payment</a>
-            <form th:action="@{/payments/{id}/delete(id=${payment.paymentId})}" method="post"
+        <div class="receipt-footer">
+            <a th:href="${userRole == 'ADMIN'} ? '/payments' : '/payments/my'" class="btn-outline">← Back</a>
+            <a th:if="${userRole == 'ADMIN'}" th:href="@{/payments/{id}/edit(id=${payment.paymentId})}" class="btn-outline">Edit</a>
+            <form th:if="${userRole == 'ADMIN'}" th:action="@{/payments/{id}/delete(id=${payment.paymentId})}" method="post"
                   onsubmit="return confirm('Delete this payment?')">
-                <button type="submit" class="btn-delete">Delete</button>
+                <button type="submit" class="btn-danger">Delete</button>
             </form>
         </div>
     </div>
 
-    <div th:if="${payment == null}"
-         style="text-align:center; padding:60px; color:#555;">
-        Payment not found or you don't have permission to view it.
+    <div class="not-found" th:if="${payment == null}">
+        <div style="font-size:32px;margin-bottom:12px">—</div>
+        <div>Payment not found or access denied.</div>
     </div>
 </div>
+
+<footer>
+    <div class="footer-logo"><span>CINEMA</span>BOOK</div>
+    <div style="font-size:11px;color:#333">SE1020 — Object Oriented Programming</div>
+</footer>
 </body>
 </html>
