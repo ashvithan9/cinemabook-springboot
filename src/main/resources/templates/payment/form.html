@@ -1,178 +1,172 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Payment - CinemaBook</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <meta charset="UTF-8"><title>Payment — CinemaBook</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'DM Sans', sans-serif; background-color: #0a0a0a; color: #c8c8c8; }
-        body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; opacity: 0.5; }
-        header { background: #0a0a0a; border-bottom: 1px solid #2a2a2a; position: relative; }
-        header::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; background: linear-gradient(90deg, #e8192c, transparent); }
-        .logo-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 2px; color: white; }
-        .logo-accent { color: #e8192c; }
-        .logo-sub { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: #555; margin-top: 1px; }
-        .nav-btn { background: transparent; border: 1px solid #2a2a2a; color: #888; padding: 6px 16px; border-radius: 6px; font-size: 12px; cursor: pointer; text-decoration: none; transition: all 0.2s; }
-        .nav-btn:hover { border-color: #e8192c; color: #e8192c; }
-        .form-card { background: #111; border: 1px solid #2a2a2a; border-radius: 14px; padding: 36px; }
-        .credit-card-preview { background: linear-gradient(135deg, #1a1a1a, #2a2a2a); border: 1px solid #3a3a3a; border-radius: 14px; padding: 24px; margin-bottom: 28px; position: relative; overflow: hidden; height: 180px; }
-        .credit-card-preview::before { content: ''; position: absolute; top: -40px; right: -40px; width: 160px; height: 160px; background: rgba(232,25,44,0.08); border-radius: 50%; }
-        .credit-card-preview::after { content: ''; position: absolute; bottom: -60px; left: -20px; width: 180px; height: 180px; background: rgba(232,25,44,0.04); border-radius: 50%; }
-        .card-chip-icon { width: 36px; height: 28px; background: linear-gradient(135deg, #d4a843, #b8860b); border-radius: 5px; margin-bottom: 20px; }
-        .card-number-preview { font-family: 'Courier New', monospace; font-size: 18px; color: white; letter-spacing: 4px; margin-bottom: 16px; }
-        .card-bottom { display: flex; justify-content: space-between; align-items: flex-end; }
-        .card-label { font-size: 9px; text-transform: uppercase; letter-spacing: 2px; color: #666; margin-bottom: 4px; }
-        .card-value { font-size: 13px; color: #c8c8c8; font-weight: 500; }
-        .card-type-badge { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; color: #e8192c; letter-spacing: 1px; }
-        .section-divider { border: none; border-top: 1px solid #2a2a2a; margin: 24px 0; }
-        label { display: block; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: #555; margin-bottom: 8px; }
-        input, select { width: 100%; padding: 11px 14px; background: #0a0a0a; border: 1px solid #2a2a2a; color: #c8c8c8; border-radius: 8px; font-size: 14px; margin-bottom: 18px; font-family: 'DM Sans', sans-serif; transition: border-color 0.2s; }
-        input:focus, select:focus { outline: none; border-color: #e8192c; }
-        select option { background: #111; }
-        .submit-btn { width: 100%; padding: 14px; background: linear-gradient(135deg, #e8192c, #b01020); color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; letter-spacing: 0.5px; transition: opacity 0.2s; }
-        .submit-btn:hover { opacity: 0.9; }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        .section-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; color: white; letter-spacing: 1px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
-        .section-title::after { content: ''; flex: 1; height: 1px; background: #2a2a2a; }
-        .amount-display { background: #0a0a0a; border: 1px solid #2a2a2a; border-radius: 8px; padding: 16px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; }
-        .amount-value { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; color: #e8192c; }
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+        :root{--gold:#C9A84C;--bg:#080808;--card:#111;--border:#1e1e1e;--muted:#555;--light:#aaa}
+        body{font-family:'DM Sans',sans-serif;background:var(--bg);color:#fff;min-height:100vh}
+        nav{display:flex;align-items:center;padding:0 48px;height:64px;background:#080808ee;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;backdrop-filter:blur(10px)}
+        .logo{display:flex;align-items:center;gap:8px;text-decoration:none;margin-right:auto}
+        .logo-badge{background:var(--gold);color:#000;font-size:10px;font-weight:700;padding:3px 7px;border-radius:3px;letter-spacing:.1em}
+        .logo-text{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.15em;color:#fff}
+        .nav-link{font-size:13px;color:var(--light);padding:8px 14px;border-radius:6px;text-decoration:none;transition:color .2s}
+        .nav-link:hover{color:#fff}
+        .nav-right{display:flex;align-items:center;gap:12px;margin-left:24px}
+        .nav-logout{font-size:12px;color:var(--muted);padding:5px 12px;border:1px solid var(--border);border-radius:6px;text-decoration:none}
+        .nav-logout:hover{border-color:#444;color:var(--light)}
+        .wrap{max-width:900px;margin:0 auto;padding:48px}
+        .layout{display:grid;grid-template-columns:1fr 320px;gap:32px;align-items:start}
+        .back{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);text-decoration:none;margin-bottom:24px;transition:color .2s}
+        .back:hover{color:var(--gold)}
+        .page-title{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:.05em;margin-bottom:28px}
+        .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:28px;position:relative;overflow:hidden}
+        .card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gold)}
+        .section-lbl{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;margin-top:22px}
+        .section-lbl:first-of-type{margin-top:0}
+        .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+        .lbl{display:block;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;margin-top:16px}
+        .lbl:first-of-type{margin-top:0}
+        .inp{width:100%;background:#0a0a0a;border:1px solid #2a2a2a;border-radius:7px;padding:11px 14px;font-size:14px;color:#e0e0e0;font-family:'DM Sans',sans-serif;transition:border-color .2s,box-shadow .2s;outline:none}
+        .inp:focus{border-color:var(--gold);box-shadow:0 0 0 3px #C9A84C1a}
+        .inp::placeholder{color:#333}
+        select.inp option{background:#111;color:#e0e0e0}
+        .inp[readonly]{background:#0d0d0d;color:#555;cursor:not-allowed;border-color:#1a1a1a}
+        .btn-gold{width:100%;background:var(--gold);color:#000;border:none;padding:14px;border-radius:7px;font-size:14px;font-family:'DM Sans',sans-serif;font-weight:500;cursor:pointer;margin-top:24px;transition:background .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+        .btn-gold:hover{background:#d4b560}
+        .cc-preview{background:linear-gradient(135deg,#1a1500,#2a2000);border:1px solid var(--gold);border-radius:14px;padding:24px;position:relative;overflow:hidden;min-height:180px}
+        .cc-preview::before{content:'';position:absolute;top:-40px;right:-40px;width:140px;height:140px;background:radial-gradient(circle,#C9A84C15,transparent 70%);border-radius:50%}
+        .cc-chip{width:36px;height:28px;background:linear-gradient(135deg,#d4a843,#b8860b);border-radius:5px;margin-bottom:24px}
+        .cc-num{font-family:monospace;font-size:16px;color:#fff;letter-spacing:.15em;margin-bottom:16px}
+        .cc-row{display:flex;justify-content:space-between;align-items:flex-end}
+        .cc-label{font-size:9px;color:#C9A84C99;text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px}
+        .cc-val{font-size:13px;color:#fff;font-weight:500}
+        .cc-type{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gold);letter-spacing:.1em}
+        .summary-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)}
+        .summary-row:last-child{border-bottom:none}
+        .s-key{font-size:12px;color:var(--muted)}
+        .s-val{font-size:13px;color:#fff;font-weight:500}
+        .amount-big{font-family:'Bebas Neue',sans-serif;font-size:48px;color:var(--gold);letter-spacing:.05em;margin:8px 0}
+        footer{border-top:1px solid var(--border);padding:24px 48px;display:flex;align-items:center;justify-content:space-between;margin-top:40px}
+        .footer-logo{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:.15em;color:var(--muted)}
+        .footer-logo span{color:var(--gold)}
     </style>
 </head>
-<body style="position:relative; z-index:1;">
-
-<header class="px-6 py-4">
-    <div class="max-w-2xl mx-auto flex justify-between items-center">
-        <div>
-            <div class="logo-title">Cinema<span class="logo-accent">Book</span></div>
-            <div class="logo-sub">Secure Payment</div>
-        </div>
-        <div class="flex items-center gap-4">
-            <a href="/payments/my" class="nav-btn">← Back</a>
-            <a href="/logout" class="nav-btn">Logout</a>
-        </div>
+<body>
+<nav>
+    <a href="/" class="logo"><span class="logo-badge">CINEMA</span><span class="logo-text">BOOK</span></a>
+    <div style="display:flex;align-items:center;gap:2px">
+        <a href="/payments/my" class="nav-link">← My Payments</a>
     </div>
-</header>
+    <div class="nav-right">
+        <a href="/logout" class="nav-logout">Logout</a>
+    </div>
+</nav>
 
-<div class="max-w-2xl mx-auto px-4 py-10" style="position:relative; z-index:1;">
-    <div class="form-card">
+<div class="wrap">
+    <a href="/payments/my" class="back">← My payments</a>
+    <div class="page-title" th:text="${isEdit != null and isEdit} ? 'Edit Payment' : 'Complete Payment'">Complete Payment</div>
 
-        <!-- Card Preview -->
-        <div class="credit-card-preview" id="cardPreview">
-            <div class="card-chip-icon"></div>
-            <div class="card-number-preview" id="previewNumber">•••• •••• •••• ••••</div>
-            <div class="card-bottom">
-                <div>
-                    <div class="card-label">Card Holder</div>
-                    <div class="card-value" id="previewName">YOUR NAME</div>
-                </div>
-                <div style="text-align:right;">
-                    <div class="card-label">Expires</div>
-                    <div class="card-value" id="previewExpiry">MM/YY</div>
-                </div>
-                <div class="card-type-badge" id="previewType">VISA</div>
+    <div class="layout">
+        <div>
+            <div class="card">
+                <form th:action="${isEdit != null and isEdit} ? @{/payments/{id}/edit(id=${payment.paymentId})} : @{/payments}"
+                      th:object="${payment}" method="post">
+                    <input type="hidden" th:field="*{bookingId}"/>
+                    <input type="hidden" th:field="*{amount}"/>
+
+                    <div class="section-lbl">Payment summary</div>
+                    <div class="summary-row">
+                        <span class="s-key">Booking ID</span>
+                        <span class="s-val" th:text="${payment.bookingId}">BK001</span>
+                    </div>
+                    <div class="summary-row" style="margin-bottom:8px">
+                        <span class="s-key">Amount due</span>
+                        <span class="amount-big" th:text="'$' + ${payment.amount}">$0.00</span>
+                    </div>
+
+                    <div class="section-lbl">Card details</div>
+                    <div class="grid2">
+                        <div>
+                            <label class="lbl">Card type</label>
+                            <select class="inp" th:field="*{cardType}" onchange="updateCC()">
+                                <option value="VISA">Visa</option>
+                                <option value="MASTERCARD">Mastercard</option>
+                                <option value="AMEX">Amex</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="lbl">Payment method</label>
+                            <select class="inp" th:field="*{paymentMethod}">
+                                <option value="CREDIT">Credit</option>
+                                <option value="DEBIT">Debit</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <label class="lbl">Cardholder name</label>
+                    <input class="inp" type="text" th:field="*{cardHolderName}" placeholder="John Doe"
+                           oninput="updateCC()"/>
+
+                    <label class="lbl">Card number</label>
+                    <input class="inp" type="text" id="cardNum" th:field="*{cardLastFour}"
+                           placeholder="1234 5678 9012 3456" maxlength="19"
+                           oninput="formatCard(this);updateCC()"/>
+
+                    <div th:if="${isEdit != null and isEdit}">
+                        <label class="lbl">Status</label>
+                        <select class="inp" th:field="*{status}">
+                            <option value="PENDING">Pending</option>
+                            <option value="COMPLETED">Completed</option>
+                            <option value="FAILED">Failed</option>
+                        </select>
+                        <label class="lbl">Payment date</label>
+                        <input class="inp" type="text" th:field="*{paymentDate}" placeholder="2024-01-01 14:30"/>
+                    </div>
+
+                    <button type="submit" class="btn-gold">
+                        <span>🔒</span>
+                        <span th:text="${isEdit != null and isEdit} ? 'Update payment' : 'Pay now'">Pay now</span>
+                    </button>
+                </form>
             </div>
         </div>
 
-        <form th:action="${isEdit != null and isEdit} ? @{/payments/{id}/edit(id=${payment.paymentId})} : @{/payments}"
-              th:object="${payment}" method="post">
-
-            <!-- Amount -->
-            <div class="amount-display">
-                <div>
-                    <div style="font-size:11px; text-transform:uppercase; letter-spacing:2px; color:#555;">Amount Due</div>
-                    <div class="amount-value" th:text="'$' + ${payment.amount}"></div>
-                </div>
-                <div style="font-size:12px; color:#555;">Booking: <span style="color:#c8c8c8;" th:text="${payment.bookingId}"></span></div>
-            </div>
-
-            <input type="hidden" th:field="*{bookingId}"/>
-            <input type="hidden" th:field="*{amount}"/>
-
-            <!-- Card Details -->
-            <div class="section-title">Card Details</div>
-
-            <div class="grid-2">
-                <div>
-                    <label>Card Type</label>
-                    <select th:field="*{cardType}" onchange="updatePreview()">
-                        <option value="VISA">Visa</option>
-                        <option value="MASTERCARD">Mastercard</option>
-                        <option value="AMEX">Amex</option>
-                    </select>
-                </div>
-                <div>
-                    <label>Payment Method</label>
-                    <select th:field="*{paymentMethod}">
-                        <option value="CREDIT">Credit Card</option>
-                        <option value="DEBIT">Debit Card</option>
-                    </select>
+        <div>
+            <div class="cc-preview" id="ccPreview">
+                <div class="cc-chip"></div>
+                <div class="cc-num" id="ccNum">•••• •••• •••• ••••</div>
+                <div class="cc-row">
+                    <div>
+                        <div class="cc-label">Card holder</div>
+                        <div class="cc-val" id="ccName">Your Name</div>
+                    </div>
+                    <div class="cc-type" id="ccType">VISA</div>
                 </div>
             </div>
-
-            <label>Card Holder Name</label>
-            <input type="text" th:field="*{cardHolderName}" placeholder="John Doe"
-                   oninput="document.getElementById('previewName').innerText = this.value || 'YOUR NAME'" required/>
-
-            <label>Card Number</label>
-            <input type="text" id="cardNumberInput" th:field="*{cardLastFour}"
-                   placeholder="1234 5678 9012 3456" maxlength="19"
-                   oninput="formatCardNumber(this)" required/>
-
-            <div class="grid-2">
-                <div>
-                    <label>Expiry Date</label>
-                    <input type="text" placeholder="MM/YY" maxlength="5"
-                           oninput="formatExpiry(this); document.getElementById('previewExpiry').innerText = this.value || 'MM/YY'" required/>
-                </div>
-                <div>
-                    <label>CVV</label>
-                    <input type="password" placeholder="•••" maxlength="4" required/>
-                </div>
-            </div>
-
-            <hr class="section-divider"/>
-
-            <!-- Admin status edit -->
-            <div th:if="${isEdit}">
-                <div class="section-title">Payment Status</div>
-                <label>Status</label>
-                <select th:field="*{status}">
-                    <option value="COMPLETED">Completed</option>
-                    <option value="PENDING">Pending</option>
-                    <option value="FAILED">Failed</option>
-                </select>
-                <label>Payment Date</label>
-                <input type="text" th:field="*{paymentDate}" placeholder="2024-01-01 14:30"/>
-            </div>
-
-            <button type="submit" class="submit-btn"
-                    th:text="${isEdit} ? 'Update Payment' : '🔒 Pay Now'"></button>
-        </form>
+        </div>
     </div>
 </div>
 
+<footer>
+    <div class="footer-logo"><span>CINEMA</span>BOOK</div>
+    <div style="font-size:11px;color:#333">SE1020 — Object Oriented Programming</div>
+</footer>
+
 <script>
-    function formatCardNumber(input) {
-        let value = input.value.replace(/\D/g, '').substring(0, 16);
-        input.value = value.replace(/(.{4})/g, '$1 ').trim();
-        const digits = value.replace(/\s/g, '');
-        const last4 = digits.length > 0 ? '•••• •••• •••• ' + digits.slice(-4).padStart(4, '•') : '•••• •••• •••• ••••';
-        document.getElementById('previewNumber').innerText = digits.length >= 4
-            ? '•••• •••• •••• ' + digits.slice(-4)
-            : '•••• •••• •••• ••••';
+    function updateCC(){
+        const name=document.querySelector('[name="cardHolderName"]')?.value||'Your Name';
+        const type=document.querySelector('[name="cardType"]')?.value||'VISA';
+        const raw=document.getElementById('cardNum')?.value.replace(/\D/g,'')||'';
+        const masked='•••• •••• •••• '+(raw.slice(-4)||'••••');
+        document.getElementById('ccName').textContent=name||'Your Name';
+        document.getElementById('ccType').textContent=type;
+        document.getElementById('ccNum').textContent=masked;
     }
-
-    function formatExpiry(input) {
-        let value = input.value.replace(/\D/g, '').substring(0, 4);
-        if (value.length >= 2) value = value.substring(0, 2) + '/' + value.substring(2);
-        input.value = value;
-    }
-
-    function updatePreview() {
-        const type = document.querySelector('[name="cardType"]').value;
-        document.getElementById('previewType').innerText = type;
+    function formatCard(el){
+        let v=el.value.replace(/\D/g,'').substring(0,16);
+        el.value=v.replace(/(.{4})/g,'$1 ').trim();
     }
 </script>
 </body>
