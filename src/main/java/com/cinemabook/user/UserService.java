@@ -7,7 +7,7 @@ import java.util.*;
 @Service
 public class UserService {
 
-    private static final String CSV_PATH = "src/main/resources/data/users.csv";
+    private static final String CSV_PATH = System.getProperty("user.dir") + "/src/main/resources/data/users.csv";
     private static final String HEADER = "userId,name,email,password,phone,role";
 
     public List<User> getAllUsers() {
@@ -19,9 +19,11 @@ public class UserService {
             boolean first = true;
             while ((line = br.readLine()) != null) {
                 if (first) { first = false; continue; }
+                if (line.trim().isEmpty()) continue;
                 String[] p = line.split(",", -1);
                 if (p.length == 6)
-                    users.add(new User(p[0], p[1], p[2], p[3], p[4], p[5]));
+                    users.add(new User(p[0].trim(), p[1].trim(), p[2].trim(),
+                            p[3].trim(), p[4].trim(), p[5].trim()));
             }
         } catch (IOException e) { e.printStackTrace(); }
         return users;
@@ -43,10 +45,23 @@ public class UserService {
         return getAllUsers().stream().anyMatch(u -> u.getEmail().equals(email));
     }
 
+    // Self-registration: always CUSTOMER
     public void saveUser(User user) {
         user.setUserId("USR" + System.currentTimeMillis());
-        user.setRole("CUSTOMER"); // always CUSTOMER on register
+        user.setRole("CUSTOMER");
+        appendUser(user);
+    }
+
+    // Admin-created user: keeps whatever role was set
+    public void createUser(User user) {
+        user.setUserId("USR" + System.currentTimeMillis());
+        if (user.getRole() == null || user.getRole().isEmpty()) user.setRole("CUSTOMER");
+        appendUser(user);
+    }
+
+    private void appendUser(User user) {
         File file = new File(CSV_PATH);
+        file.getParentFile().mkdirs();
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(file, true))) {
             if (file.length() == 0) bw.write(HEADER + "\n");
             bw.write(toCsvLine(user) + "\n");
