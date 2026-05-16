@@ -1,15 +1,18 @@
 package com.cinemabook.payment;
 
 import org.springframework.stereotype.Service;
+
 import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PaymentService {
 
-    private static final String CSV_PATH = System.getProperty("user.dir") + "/data/payments.csv";
+    private static final String CSV_PATH = System.getProperty("user.dir") + "/src/main/resources/data/payments.csv";
     private static final String HEADER = "paymentId,userId,bookingId,amount,status,paymentDate,cardHolderName,cardLastFour,cardType,paymentMethod";
 
     public List<Payment> getAllPayments() {
@@ -21,6 +24,7 @@ public class PaymentService {
             boolean first = true;
             while ((line = br.readLine()) != null) {
                 if (first) { first = false; continue; }
+                if (line.trim().isEmpty()) continue;
                 String[] p = parseCSVLine(line);
                 if (p.length == 10)
                     payments.add(new Payment(p[0],p[1],p[2],p[3],p[4],p[5],p[6],p[7],p[8],p[9]));
@@ -62,6 +66,7 @@ public class PaymentService {
                 .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
         payment.setStatus("COMPLETED");
         File file = new File(CSV_PATH);
+        file.getParentFile().mkdirs();
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(file, true))) {
             if (file.length() == 0) bw.write(HEADER + "\n");
             bw.write(toCsvLine(payment) + "\n");
