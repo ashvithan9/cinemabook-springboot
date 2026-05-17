@@ -1,5 +1,6 @@
 package com.cinemabook.movie;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
