@@ -1,1 +1,6 @@
-showId,movieId,date,time,hall,totalSeats,availableSeats
+showId,movieId,movieTitle,date,time,hall,totalSeats,availableSeats,price
+SHW001,MOV1777628660494,Shawshank Redemption,2026-05-20,18:30,Hall A,80,80,12.50
+SHW002,MOV1777628660494,Shawshank Redemption,2026-05-20,21:00,Hall B,60,60,12.50
+SHW003,MOV1777631677570,The Godfather,2026-05-21,19:00,Hall A,80,78,14.00
+SHW004,MOV1777814843787,The Dark Knight,2026-05-22,20:00,Hall C,100,98,15.00
+SHW1778672271120,MOV1778670621645,Project Hail Mary,2026-05-20,22:00,Hall A,5,2,12.50

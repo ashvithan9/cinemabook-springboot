@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8"><title>Show Form — CinemaBook</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--gold:#C9A84C;--bg:#080808;--card:#111;--bd:#1e1e1e;--mu:#555;--li:#aaa}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:#fff;min-height:100vh}
+nav{display:flex;align-items:center;padding:0 40px;height:62px;background:#080808f0;border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:100}
+.logo{display:flex;align-items:center;gap:7px;text-decoration:none;margin-right:auto}
+.lb{background:var(--gold);color:#000;font-size:10px;font-weight:700;padding:3px 6px;border-radius:3px}
+.lt{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:.12em;color:#fff}
+.nl{font-size:13px;color:var(--li);padding:7px 12px;border-radius:6px;text-decoration:none}
+.nl:hover{color:#fff}
+.nr{display:flex;align-items:center;gap:10px;margin-left:20px}
+.lo{font-size:12px;color:var(--mu);padding:5px 10px;border:1px solid var(--bd);border-radius:6px;text-decoration:none}
+.lo:hover{border-color:#444;color:var(--li)}
+.wp{max-width:560px;margin:50px auto;padding:0 24px}
+.bk{display:inline-flex;align-items:center;gap:5px;font-size:13px;color:var(--mu);text-decoration:none;margin-bottom:20px;transition:color .15s}
+.bk:hover{color:var(--gold)}
+.pt{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:.04em;margin-bottom:24px}
+.cd{background:var(--card);border:1px solid var(--bd);border-radius:11px;padding:28px;position:relative;overflow:hidden}
+.cd::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gold)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.lbl{display:block;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--mu);margin-bottom:7px;margin-top:16px}
+.lbl:first-of-type{margin-top:0}
+.inp{
+  width:100%;background:#0a0a0a;border:1px solid #252525;border-radius:7px;
+  padding:10px 13px;font-size:13px;color:#e0e0e0;
+  font-family:'DM Sans',sans-serif;outline:none;
+  transition:border-color .15s,box-shadow .15s;
+  appearance:none;-webkit-appearance:none;
+}
+.inp:focus{border-color:var(--gold);box-shadow:0 0 0 3px #C9A84C18}
+.inp::placeholder{color:#2a2a2a}
+
+/* Dropdown arrow for select elements */
+.sel-wrap{position:relative}
+.sel-wrap select.inp{
+  padding-right:32px;
+  cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' viewBox='0 0 12 7'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23555' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 12px center;
+}
+.sel-wrap select.inp:focus{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' viewBox='0 0 12 7'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23C9A84C' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+select.inp option{background:#111;color:#e0e0e0}
+select.inp option[value=""]{color:#555}
+
+.ae{background:#100808;border:1px solid #e84a4a44;color:#e84a4a;border-radius:7px;padding:9px 13px;font-size:13px;margin-bottom:14px}
+.bg{width:100%;background:var(--gold);color:#000;border:none;padding:12px;border-radius:7px;font-size:14px;font-family:'DM Sans',sans-serif;font-weight:600;cursor:pointer;margin-top:22px;transition:background .15s}
+.bg:hover{background:#d4b560}
+
+/* Hall capacity hint */
+.hall-hint{font-size:11px;color:var(--mu);margin-top:5px;height:16px;transition:color .15s}
+
+footer{border-top:1px solid var(--bd);padding:20px 40px;display:flex;align-items:center;justify-content:space-between;margin-top:60px}
+.fl{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:.12em;color:var(--mu)}
+.fl span{color:var(--gold)}
+</style>
+</head>
+<body>
+<nav>
+  <a href="/" class="logo"><span class="lb">CINEMA</span><span class="lt">BOOK</span></a>
+  <div style="display:flex;align-items:center;gap:2px">
+    <a href="/shows" class="nl">← Back to shows</a>
+  </div>
+  <div class="nr"><a href="/logout" class="lo">Logout</a></div>
+</nav>
+
+<div class="wp">
+  <a href="/shows" class="bk">← Shows</a>
+  <div class="pt" th:text="${isEdit} ? 'Edit Show' : 'Add New Show'">Add New Show</div>
+
+  <div class="cd">
+    <div class="ae" th:if="${error}" th:text="${error}"></div>
+    <form th:action="${isEdit} ? @{/shows/{id}/edit(id=${show.showId})} : @{/shows}"
+          th:object="${show}" method="post">
+
+      <!-- Movie dropdown -->
+      <label class="lbl">Movie</label>
+      <div class="sel-wrap">
+        <select class="inp" th:field="*{movieId}" onchange="updateTitle(this)" required>
+          <option value="">-- Select movie --</option>
+          <option th:each="m : ${movies}" th:value="${m.movieId}"
+                  th:text="${m.title}" th:attr="data-title=${m.title}"></option>
+        </select>
+      </div>
+      <input type="hidden" th:field="*{movieTitle}" id="movieTitleHidden"/>
+
+      <!-- Date + Time slot -->
+      <div class="g2">
+        <div>
+          <label class="lbl">Date</label>
+          <input class="inp" type="date" th:field="*{date}" required/>
+        </div>
+        <div>
+          <label class="lbl">Time</label>
+          <div class="sel-wrap">
+            <select class="inp" th:field="*{time}" required>
+              <option value="">-- Select time --</option>
+              <option value="10:00">10:00 AM</option>
+              <option value="11:30">11:30 AM</option>
+              <option value="12:30">12:30 PM</option>
+              <option value="14:00">02:00 PM</option>
+              <option value="15:30">03:30 PM</option>
+              <option value="17:00">05:00 PM</option>
+              <option value="18:30">06:30 PM</option>
+              <option value="19:00">07:00 PM</option>
+              <option value="20:00">08:00 PM</option>
+              <option value="21:00">09:00 PM</option>
+              <option value="22:30">10:30 PM</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hall + Price -->
+      <div class="g2">
+        <div>
+          <label class="lbl">Hall</label>
+          <div class="sel-wrap">
+            <select class="inp" th:field="*{hall}" onchange="updateHallHint(this)" required>
+              <option value="">-- Select hall --</option>
+              <option value="Hall A" data-cap="80">Hall A (80 seats)</option>
+              <option value="Hall B" data-cap="60">Hall B (60 seats)</option>
+              <option value="Hall C" data-cap="100">Hall C (100 seats)</option>
+              <option value="Hall D" data-cap="120">Hall D (120 seats)</option>
+              <option value="VIP Hall" data-cap="30">VIP Hall (30 seats)</option>
+            </select>
+          </div>
+          <div class="hall-hint" id="hallHint"></div>
+        </div>
+        <div>
+          <label class="lbl">Price per seat ($)</label>
+          <input class="inp" type="number" th:field="*{price}" placeholder="12.50" step="0.01" min="0" required/>
+        </div>
+      </div>
+
+      <!-- Seats -->
+      <div class="g2">
+        <div>
+          <label class="lbl">Total seats</label>
+          <input class="inp" type="number" th:field="*{totalSeats}" id="totalSeatsInput"
+                 placeholder="100" min="1" required/>
+        </div>
+        <div th:if="${isEdit}">
+          <label class="lbl">Available seats</label>
+          <input class="inp" type="number" th:field="*{availableSeats}" min="0"/>
+        </div>
+      </div>
+
+      <button type="submit" class="bg" th:text="${isEdit} ? 'Update show' : 'Add show'">Add show</button>
+    </form>
+  </div>
+</div>
+
+<footer><div class="fl"><span>CINEMA</span>BOOK</div></footer>
+
+<script>
+// Keep hidden movie title in sync with the dropdown
+function updateTitle(sel) {
+  const opt = sel.options[sel.selectedIndex];
+  document.getElementById('movieTitleHidden').value = opt.dataset.title || '';
+}
+
+// When a hall is selected, update the hint and auto-fill total seats (if not in edit mode)
+function updateHallHint(sel) {
+  const opt  = sel.options[sel.selectedIndex];
+  const cap  = opt.dataset.cap;
+  const hint = document.getElementById('hallHint');
+  const totalInput = document.getElementById('totalSeatsInput');
+
+  if (cap) {
+    hint.textContent  = '↑ Default capacity: ' + cap + ' seats';
+    hint.style.color  = 'var(--gold)';
+    // Auto-fill total seats with the hall's default capacity
+    if (totalInput && (!totalInput.value || totalInput.value === '0')) {
+      totalInput.value = cap;
+    }
+  } else {
+    hint.textContent = '';
+  }
+}
+
+// On page load, restore hint if a hall is already selected (edit mode)
+window.addEventListener('DOMContentLoaded', () => {
+  const hallSel = document.querySelector('select[name="hall"]');
+  if (hallSel && hallSel.value) updateHallHint(hallSel);
+});
+</script>
+</body>
+</html>
