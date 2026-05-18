@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8"><title>Shows — CinemaBook</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--gold:#C9A84C;--gd:#C9A84C33;--bg:#080808;--card:#111;--bd:#1e1e1e;--mu:#555;--li:#aaa}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:#fff;min-height:100vh}
+nav{display:flex;align-items:center;padding:0 40px;height:62px;background:#080808f0;border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:100;backdrop-filter:blur(8px)}
+.logo{display:flex;align-items:center;gap:7px;text-decoration:none;margin-right:auto}
+.lb{background:var(--gold);color:#000;font-size:10px;font-weight:700;padding:3px 6px;border-radius:3px}
+.lt{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:.12em;color:#fff}
+.nl{font-size:13px;color:var(--li);padding:7px 12px;border-radius:6px;text-decoration:none;transition:color .15s,background .15s;position:relative}
+.nl:hover{color:#fff;background:#ffffff08}
+.nl.on{color:#fff}
+.nl.on::after{content:'';position:absolute;bottom:-1px;left:12px;right:12px;height:2px;background:var(--gold);border-radius:2px}
+.nl.ad{color:var(--mu);font-size:12px}
+.nl.ad:hover{color:var(--gold)}
+.nvd{width:1px;height:14px;background:var(--bd);margin:0 4px}
+.nr{display:flex;align-items:center;gap:10px;margin-left:20px}
+.av{width:30px;height:30px;border-radius:50%;background:#1e1a0a;border:1.5px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--gold);text-decoration:none}
+.lo{font-size:12px;color:var(--mu);padding:5px 10px;border:1px solid var(--bd);border-radius:6px;text-decoration:none}
+.lo:hover{border-color:#444;color:var(--li)}
+.wp{max-width:1080px;margin:0 auto;padding:36px 40px 80px}
+.bk{display:inline-flex;align-items:center;gap:5px;font-size:13px;color:var(--mu);text-decoration:none;margin-bottom:18px;transition:color .15s}
+.bk:hover{color:var(--gold)}
+.tb{display:flex;align-items:center;gap:12px;margin-bottom:24px}
+.pt{font-family:'Bebas Neue',sans-serif;font-size:34px;letter-spacing:.04em;margin-right:auto}
+.mv-info{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:16px 20px;margin-bottom:24px;display:flex;align-items:center;gap:16px}
+.mv-title{font-size:18px;font-weight:500;color:#fff}
+.mv-meta{font-size:12px;color:var(--mu);margin-top:3px}
+.bg{background:var(--gold);color:#000;border:none;padding:9px 18px;border-radius:7px;font-size:13px;font-family:'DM Sans',sans-serif;font-weight:500;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:5px;transition:background .15s}
+.bg:hover{background:#d4b560}
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.sc{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:18px;transition:border-color .2s,transform .2s;position:relative;overflow:hidden}
+.sc:hover{border-color:#2a2a2a;transform:translateY(-2px)}
+.sc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform .2s}
+.sc:hover::before{transform:scaleX(1)}
+.sc.sold .sc-book{opacity:.4;pointer-events:none}
+.sc-movie{font-size:14px;font-weight:500;color:#fff;margin-bottom:12px}
+.sc-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}
+.sc-key{font-size:11px;color:var(--mu)}
+.sc-val{font-size:13px;color:var(--li);font-weight:500}
+.sc-val.gold{color:var(--gold)}
+.seats-bar{background:#1a1a1a;border-radius:99px;height:4px;margin:10px 0;overflow:hidden}
+.seats-fill{background:var(--gold);height:100%;border-radius:99px;transition:width .3s}
+.sc-actions{display:flex;gap:6px;margin-top:12px;align-items:center}
+.bs{background:transparent;border:1px solid #252525;color:var(--li);border-radius:6px;padding:5px 10px;font-size:11px;text-decoration:none;display:inline-flex;align-items:center;transition:all .15s;white-space:nowrap}
+.bs:hover{border-color:var(--gold);color:var(--gold)}
+.bd{background:transparent;border:1px solid #252525;color:var(--mu);border-radius:6px;padding:5px 10px;font-size:11px;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .15s}
+.bd:hover{border-color:#e84a4a;color:#e84a4a}
+.sold-tag{background:#1a0a0a;color:#e84a4a;border:1px solid #e84a4a33;border-radius:4px;font-size:10px;padding:2px 7px}
+.em{text-align:center;padding:60px;color:var(--mu);font-size:14px}
+footer{border-top:1px solid var(--bd);padding:20px 40px;display:flex;align-items:center;justify-content:space-between;margin-top:40px}
+.fl{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:.12em;color:var(--mu)}
+.fl span{color:var(--gold)}
+</style>
+</head>
+<body>
+<nav>
+  <a href="/" class="logo"><span class="lb">CINEMA</span><span class="lt">BOOK</span></a>
+  <div style="display:flex;align-items:center;gap:2px">
+    <a href="/movies" class="nl">Movies</a>
+    <a href="/bookings/my" class="nl">My Bookings</a>
+    <a href="/payments/my" class="nl">My Payments</a>
+    <a href="/feedback" class="nl">Feedback</a>
+    <div class="nvd" th:if="${userRole=='ADMIN'}"></div>
+    <a href="/users" class="nl ad" th:if="${userRole=='ADMIN'}">Users</a>
+    <a href="/shows" class="nl ad on" th:if="${userRole=='ADMIN'}">Shows</a>
+    <a href="/bookings" class="nl ad" th:if="${userRole=='ADMIN'}">All Bookings</a>
+    <a href="/payments" class="nl ad" th:if="${userRole=='ADMIN'}">Payments</a>
+  </div>
+  <div class="nr">
+    <a href="/profile" class="av">◉</a>
+    <a href="/logout" class="lo">Logout</a>
+  </div>
+</nav>
+
+<div class="wp">
+  <a href="/movies" class="bk">← Movies</a>
+
+  <div class="tb">
+    <div class="pt" th:text="${movie!=null} ? 'Showtimes for '+${movie.title} : 'All Shows'">Shows</div>
+    <a th:if="${userRole=='ADMIN'}" th:href="${movieId!=null} ? '/shows/new?movieId='+${movieId} : '/shows/new'" class="bg">+ Add show</a>
+  </div>
+
+  <div class="mv-info" th:if="${movie!=null}">
+    <div>
+      <div class="mv-title" th:text="${movie.title}">Movie</div>
+      <div class="mv-meta" th:text="${movie.genre}+' · '+${movie.duration}+' min · ★ '+${movie.rating}">Meta</div>
+    </div>
+  </div>
+
+  <div class="sg" th:if="${!#lists.isEmpty(shows)}">
+    <div th:each="s : ${shows}" th:class="${s.availableSeats==0} ? 'sc sold' : 'sc'">
+      <div class="sc-movie" th:text="${s.movieTitle}" th:if="${movie==null}">Movie Title</div>
+      <div class="sc-row">
+        <span class="sc-key">Date</span>
+        <span class="sc-val" th:text="${s.date}">—</span>
+      </div>
+      <div class="sc-row">
+        <span class="sc-key">Time</span>
+        <span class="sc-val" th:text="${s.time}">—</span>
+      </div>
+      <div class="sc-row">
+        <span class="sc-key">Hall</span>
+        <span class="sc-val" th:text="${s.hall}">—</span>
+      </div>
+      <div class="sc-row">
+        <span class="sc-key">Price per seat</span>
+        <span class="sc-val gold" th:text="'$'+${s.price}">—</span>
+      </div>
+      <div class="seats-bar">
+        <div class="seats-fill" th:style="'width:'+${(s.availableSeats*100/s.totalSeats)}+'%'"></div>
+      </div>
+      <div class="sc-row" style="margin-bottom:0">
+        <span class="sc-key" th:text="${s.availableSeats}+' / '+${s.totalSeats}+' seats left'">seats</span>
+        <span class="sold-tag" th:if="${s.availableSeats==0}">Sold out</span>
+      </div>
+      <div class="sc-actions">
+        <a th:if="${s.availableSeats>0}" th:href="@{/bookings/new(showId=${s.showId})}" class="bs sc-book" style="background:var(--gold);color:#000;border-color:var(--gold)">Book seats</a>
+        <a th:href="@{/shows/{id}(id=${s.showId})}" class="bs">Details</a>
+        <a th:if="${userRole=='ADMIN'}" th:href="@{/shows/{id}/edit(id=${s.showId})}" class="bs">Edit</a>
+        <form th:if="${userRole=='ADMIN'}" th:action="@{/shows/{id}/delete(id=${s.showId})}" method="post"
+              onsubmit="return confirm('Delete show?')">
+          <button type="submit" class="bd">Del</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div th:if="${#lists.isEmpty(shows)}" class="em">
+    No shows available.<br>
+    <a th:if="${userRole=='ADMIN'}" href="/shows/new" class="bg" style="margin-top:14px;display:inline-flex">+ Add first show</a>
+  </div>
+</div>
+
+<footer><div class="fl"><span>CINEMA</span>BOOK</div></footer>
+</body>
+</html>
