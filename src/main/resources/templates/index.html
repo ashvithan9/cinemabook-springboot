@@ -2,283 +2,836 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CinemaBook</title>
-
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        cinema: {
-                            red: '#e8192c',
-                            darkred: '#b01020',
-                            black: '#0a0a0a',
-                            card: '#111111',
-                            border: '#2a2a2a',
-                            muted: '#555555',
-                            light: '#c8c8c8',
-                        }
-                    },
-                    fontFamily: {
-                        display: ['Bebas Neue', 'sans-serif'],
-                        body: ['DM Sans', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
-
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --gold: #C9A84C;
+            --gold-dim: #C9A84C44;
+            --bg: #080808;
+            --card: #111111;
+            --border: #1e1e1e;
+            --muted: #555;
+            --light: #aaa;
+        }
+
         body {
             font-family: 'DM Sans', sans-serif;
-            background-color: #0a0a0a;
-            color: #c8c8c8;
+            background: var(--bg);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-            pointer-events: none;
-            z-index: 0;
-            opacity: 0.5;
+        /* ── NAVBAR ── */
+        nav {
+            display: flex;
+            align-items: center;
+            padding: 0 48px;
+            height: 64px;
+            background: #080808ee;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
         }
 
-        header {
-            background: #0a0a0a;
-            border-bottom: 1px solid #2a2a2a;
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            margin-right: auto;
+        }
+
+        .logo-badge {
+            background: var(--gold);
+            color: #000;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 3px 7px;
+            border-radius: 3px;
+            letter-spacing: .1em;
+        }
+
+        .logo-text {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 22px;
+            letter-spacing: .15em;
+            color: #fff;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .nav-link {
+            font-size: 13px;
+            color: var(--light);
+            padding: 8px 14px;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: color .2s, background .2s;
+            white-space: nowrap;
             position: relative;
         }
 
-        header::after {
+        .nav-link:hover { color: #fff; background: #ffffff08; }
+
+        .nav-link.active { color: #fff; }
+
+        .nav-link.active::after {
             content: '';
             position: absolute;
-            bottom: 0; left: 0;
-            width: 100%;
+            bottom: -1px;
+            left: 14px;
+            right: 14px;
             height: 2px;
-            background: linear-gradient(90deg, #e8192c, transparent);
+            background: var(--gold);
+            border-radius: 2px;
         }
 
-        .logo-title {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 1.6rem;
-            letter-spacing: 2px;
-            color: white;
+        .nav-link.admin {
+            color: var(--muted);
+            font-size: 12px;
         }
 
-        .logo-accent { color: #e8192c; }
+        .nav-link.admin:hover { color: var(--gold); }
 
-        .logo-sub {
-            font-size: 11px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: #555555;
-            margin-top: 1px;
+        .nav-divider {
+            width: 1px;
+            height: 16px;
+            background: var(--border);
+            margin: 0 6px;
         }
 
-        .admin-badge {
-            background: linear-gradient(135deg, #e8192c, #b01020);
-            color: white;
-            padding: 4px 14px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
+        .nav-right {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 12px;
+            margin-left: 24px;
         }
 
-        .user-name {
-            font-size: 13px;
-            color: #888;
-        }
-
-        .nav-btn {
-            background: transparent;
-            border: 1px solid #2a2a2a;
-            color: #888;
-            padding: 6px 16px;
-            border-radius: 6px;
-            font-size: 12px;
+        .nav-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #1e1a0a;
+            border: 1.5px solid var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
             font-weight: 500;
-            letter-spacing: 0.5px;
+            color: var(--gold);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .nav-logout {
+            font-size: 12px;
+            color: var(--muted);
+            padding: 5px 12px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            text-decoration: none;
+            transition: border-color .2s, color .2s;
+        }
+
+        .nav-logout:hover { border-color: #444; color: var(--light); }
+
+        /* ── HERO ── */
+        .hero {
+            position: relative;
+            height: 520px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(to right, #080808 35%, transparent 70%),
+                linear-gradient(160deg, #1a0f00 0%, #0d0800 50%, #080808 100%);
+        }
+
+        .hero-right-glow {
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 60%;
+            background: linear-gradient(135deg, #2a1800 0%, #1a0d00 40%, #0a0a0a 80%);
+        }
+
+        .hero-orb {
+            position: absolute;
+            right: 200px;
+            top: 80px;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, #C9A84C18 0%, transparent 65%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .hero-orb-2 {
+            position: absolute;
+            right: 350px;
+            bottom: 40px;
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle, #C9A84C0a 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        /* Decorative film reel lines */
+        .hero-lines {
+            position: absolute;
+            right: 60px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, transparent, #C9A84C22, transparent);
+        }
+
+        .hero-lines-2 {
+            position: absolute;
+            right: 120px;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background: linear-gradient(to bottom, transparent, #C9A84C11, transparent);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            padding: 0 48px;
+            max-width: 520px;
+        }
+
+        .hero-eyebrow {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .hero-badge {
+            background: var(--gold);
+            color: #000;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 3px;
+            letter-spacing: .1em;
+        }
+
+        .hero-sub {
+            font-size: 12px;
+            color: var(--muted);
+            letter-spacing: .1em;
+            text-transform: uppercase;
+        }
+
+        .hero-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 80px;
+            line-height: .92;
+            letter-spacing: .03em;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        .hero-title span { color: var(--gold); }
+
+        .hero-tagline {
+            font-size: 14px;
+            color: #888;
+            line-height: 1.7;
+            margin-bottom: 28px;
+            max-width: 400px;
+        }
+
+        .hero-user {
+            font-size: 13px;
+            color: var(--light);
+            margin-bottom: 28px;
+        }
+
+        .hero-user span {
+            color: var(--gold);
+            font-weight: 500;
+        }
+
+        .hero-btns {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-gold {
+            background: var(--gold);
+            color: #000;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 500;
             cursor: pointer;
             text-decoration: none;
-            transition: all 0.2s;
-            font-family: 'DM Sans', sans-serif;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            letter-spacing: .02em;
+            transition: background .2s, transform .15s;
         }
-        .nav-btn:hover {
-            border-color: #e8192c;
-            color: #e8192c;
+
+        .btn-gold:hover { background: #d4b560; transform: translateY(-1px); }
+
+        .btn-outline {
+            background: transparent;
+            color: #fff;
+            border: 1.5px solid #333;
+            padding: 12px 28px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 400;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            letter-spacing: .02em;
+            transition: border-color .2s, background .2s, transform .15s;
+        }
+
+        .btn-outline:hover { border-color: #555; background: #ffffff08; transform: translateY(-1px); }
+
+        /* ── POSTER CAROUSEL ── */
+        .hero-posters {
+            position: absolute;
+            right: 48px;
+            top: 30px;
+            bottom: 30px;
+            width: 390px;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        .carousel-track {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Each slide = one group of 6 posters */
+        .c-slide {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            opacity: 0;
+            transition: opacity .8s ease;
+            pointer-events: none;
+        }
+
+        .c-slide.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .poster-col {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            flex: 1;
+        }
+
+        .poster-col.mid { margin-top: -30px; }
+
+        .poster-mini {
+            width: 100%;
+            border-radius: 8px;
+            overflow: hidden;
+            opacity: .58;
+            transition: opacity .2s, transform .2s;
+            position: relative;
+        }
+
+        .poster-mini:hover { opacity: .85; transform: scale(1.03); }
+        .poster-mini.tall  { height: 170px; }
+        .poster-mini.short { height: 115px; }
+        .poster-mini.hi    { opacity: .72; outline: 1px solid #C9A84C55; }
+
+        .poster-wrap { position: relative; width: 100%; height: 100%; }
+        .poster-wrap a { display: block; width: 100%; height: 100%; position: relative; }
+
+        .poster-overlay {
+            background: linear-gradient(to top, rgba(0,0,0,.78) 0%, transparent 55%);
+            position: absolute;
+            inset: 0;
+            border-radius: 8px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .poster-label {
+            position: absolute;
+            bottom: 6px; left: 6px; right: 6px;
+            font-size: 8px; color: #fff; font-weight: 500;
+            text-shadow: 0 1px 4px rgba(0,0,0,1);
+            line-height: 1.3; z-index: 2; pointer-events: none;
+        }
+
+        .poster-img {
+            width: 100%; height: 100%;
+            object-fit: cover; display: block; border-radius: 8px;
+        }
+
+        .poster-fallback {
+            width: 100%; height: 100%;
+            background: linear-gradient(160deg, #1a1000, #2a1a00);
+            display: flex; align-items: center;
+            justify-content: center; font-size: 22px;
+        }
+
+        /* Dot indicators */
+        .carousel-dots {
+            position: absolute;
+            bottom: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 5px;
+            z-index: 3;
+        }
+
+        .c-dot {
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            background: #333;
+            transition: background .3s, transform .3s;
+            cursor: pointer;
+        }
+
+        .c-dot.active { background: var(--gold); transform: scale(1.3); }
+
+        /* ── QUICK ACTIONS ── */
+        .section {
+            padding: 48px 48px 0;
         }
 
         .section-label {
             font-size: 10px;
-            font-weight: 600;
+            letter-spacing: .15em;
             text-transform: uppercase;
-            letter-spacing: 3px;
-            color: #555555;
-            margin-bottom: 16px;
-            margin-top: 40px;
+            color: var(--muted);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
-        /* Cards */
-        .cinema-card {
-            background: #111111;
-            border: 1px solid #2a2a2a;
-            border-radius: 12px;
-            padding: 28px 24px;
+        .section-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        .cards-grid.admin-grid {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .action-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px 18px;
             text-decoration: none;
-            color: #c8c8c8;
+            color: #aaa;
             display: block;
+            transition: border-color .2s, transform .2s, color .2s;
             position: relative;
             overflow: hidden;
-            transition: all 0.2s ease;
         }
 
-        .cinema-card::before {
+        .action-card::before {
             content: '';
             position: absolute;
             top: 0; left: 0; right: 0;
             height: 2px;
-            background: linear-gradient(90deg, #e8192c, transparent);
-            opacity: 0;
-            transition: opacity 0.2s;
+            background: var(--gold);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform .25s;
         }
 
-        .cinema-card:hover {
-            border-color: #3a3a3a;
+        .action-card:hover {
+            border-color: #2a2a2a;
             transform: translateY(-3px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-            color: #e0e0e0;
+            color: #ddd;
         }
 
-        .cinema-card:hover::before {
-            opacity: 1;
+        .action-card:hover::before { transform: scaleX(1); }
+
+        .action-card.admin-card {
+            border-left: 2px solid #C9A84C33;
         }
 
-        .cinema-card.admin-only {
-            border-left: 2px solid #e8192c;
+        .action-card.admin-card:hover {
+            border-left-color: var(--gold);
         }
 
-        .card-icon {
-            font-size: 26px;
+        .card-icon-wrap {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: #0d0d0d;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             margin-bottom: 14px;
-            display: block;
+            font-size: 16px;
         }
 
         .card-title {
-            font-size: 15px;
-            font-weight: 600;
-            color: white;
-            margin-bottom: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #ddd;
+            margin-bottom: 5px;
         }
 
         .card-desc {
-            font-size: 12px;
-            color: #555555;
+            font-size: 11px;
+            color: var(--muted);
             line-height: 1.5;
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            margin-top: 64px;
+            padding: 24px 48px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .footer-logo {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 16px;
+            letter-spacing: .15em;
+            color: var(--muted);
+        }
+
+        .footer-logo span { color: var(--gold); }
+
+        .footer-text {
+            font-size: 11px;
+            color: #333;
+        }
+
+        /* ── ADMIN ONLY ── */
+        .admin-hint {
+            font-size: 10px;
+            color: var(--gold);
+            background: #1e1a0a;
+            border: 1px solid var(--gold-dim);
+            border-radius: 4px;
+            padding: 2px 7px;
+            margin-left: 8px;
+            letter-spacing: .05em;
         }
     </style>
 </head>
-<body style="position: relative; z-index: 1;">
+<body>
 
-<!-- Header -->
-<header class="px-6 py-4">
-    <div class="max-w-5xl mx-auto flex justify-between items-center">
-        <div>
-            <div class="logo-title">Cinema<span class="logo-accent">Book</span></div>
-            <div class="logo-sub">Cinema Booking System</div>
-        </div>
-        <div class="flex items-center gap-4">
-            <div th:if="${userRole == 'ADMIN'}" class="admin-badge">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M12 2L3 7l9 5 9-5-9-5z"/>
-                    <path d="M3 12l9 5 9-5"/>
-                    <path d="M3 17l9 5 9-5"/>
-                </svg>
-                Admin
-            </div>
-            <span class="user-name" th:text="${userName}"></span>
-            <a href="/profile" class="nav-btn">Profile</a>
-            <a href="/logout" class="nav-btn">Logout</a>
+<!-- NAVBAR -->
+<nav>
+    <a href="/" class="logo">
+        <span class="logo-badge">CINEMA</span>
+        <span class="logo-text">BOOK</span>
+    </a>
+
+    <div class="nav-links">
+        <a href="/movies"      class="nav-link active">Movies</a>
+        <a href="/bookings/my" class="nav-link">My Bookings</a>
+        <a href="/payments/my" class="nav-link">My Payments</a>
+        <a href="/feedback"    class="nav-link">Feedback</a>
+
+        <div th:if="${userRole == 'ADMIN'}" style="display:contents">
+            <div class="nav-divider"></div>
+            <a href="/users"    class="nav-link admin">Users</a>
+            <a href="/payments" class="nav-link admin">All Payments</a>
         </div>
     </div>
-</header>
 
-<!-- Main Content -->
-<div class="max-w-5xl mx-auto px-4 pb-16" style="position: relative; z-index: 1;">
+    <div class="nav-right">
+        <a href="/profile" class="nav-avatar"
+           th:text="${#strings.substring(userName, 0, 2).toUpperCase()}">AK</a>
+        <a href="/logout" class="nav-logout">Logout</a>
+    </div>
+</nav>
 
-    <!-- Browse Section -->
-    <p class="section-label">Browse</p>
-    <div class="grid grid-cols-3 gap-5">
-        <a href="/movies" class="cinema-card">
-            <span class="card-icon">🎬</span>
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-right-glow"></div>
+    <div class="hero-orb"></div>
+    <div class="hero-orb-2"></div>
+    <div class="hero-lines"></div>
+    <div class="hero-lines-2"></div>
+
+    <!-- Poster Carousel -->
+    <div class="hero-posters" th:if="${not #lists.isEmpty(nowShowingMovies)}">
+        <div class="carousel-track" id="carouselTrack">
+            <!-- slides built by JS -->
+        </div>
+        <div class="carousel-dots" id="carouselDots"></div>
+    </div>
+
+    <!-- Hero text -->
+    <div class="hero-content">
+        <div class="hero-eyebrow">
+            <span class="hero-badge">NOW SHOWING</span>
+            <span class="hero-sub">Book your seat tonight</span>
+        </div>
+        <div class="hero-title">Your next<br><span>great</span><br>movie awaits</div>
+        <div class="hero-user">
+            Welcome back, <span th:text="${userName}">Guest</span>
+        </div>
+        <div class="hero-tagline">
+            Browse what's showing, pick your seats, and book in seconds.
+            Cinema at your fingertips.
+        </div>
+        <div class="hero-btns">
+            <a href="/movies" class="btn-gold">&#9654; Browse movies</a>
+            <a href="/bookings/my" class="btn-outline">My bookings</a>
+        </div>
+    </div>
+</section>
+
+<!-- QUICK ACTIONS -->
+<div class="section">
+    <div class="section-label">Quick access</div>
+    <div class="cards-grid">
+        <a href="/movies" class="action-card">
+            <div class="card-icon-wrap">🎬</div>
             <div class="card-title">Movies</div>
-            <div class="card-desc">Browse now showing and upcoming movies</div>
+            <div class="card-desc">Browse now showing &amp; upcoming</div>
         </a>
-        <a href="/shows" class="cinema-card">
-            <span class="card-icon">🎭</span>
-            <div class="card-title">Shows</div>
-            <div class="card-desc">View showtimes and available seats</div>
-        </a>
-        <a href="/bookings/my" class="cinema-card">
-            <span class="card-icon">🎟️</span>
+        <a href="/bookings/my" class="action-card">
+            <div class="card-icon-wrap">🎟</div>
             <div class="card-title">My Bookings</div>
-            <div class="card-desc">View and manage your bookings</div>
+            <div class="card-desc">View &amp; manage your reservations</div>
         </a>
-        <a href="/payments/my" class="cinema-card">
-            <span class="card-icon">💳</span>
+        <a href="/payments/my" class="action-card">
+            <div class="card-icon-wrap">💳</div>
             <div class="card-title">My Payments</div>
-            <div class="card-desc">View your payment history</div>
+            <div class="card-desc">Your transaction history</div>
         </a>
-        <a href="/feedback" class="cinema-card">
-            <span class="card-icon">⭐</span>
+        <a href="/feedback" class="action-card">
+            <div class="card-icon-wrap">★</div>
             <div class="card-title">Feedback</div>
-            <div class="card-desc">Read and leave movie reviews</div>
+            <div class="card-desc">Read &amp; write movie reviews</div>
         </a>
-        <a href="/profile" class="cinema-card">
-            <span class="card-icon">👤</span>
+        <a href="/profile" class="action-card">
+            <div class="card-icon-wrap">◉</div>
             <div class="card-title">My Profile</div>
             <div class="card-desc">Edit your account details</div>
         </a>
     </div>
-
-    <!-- Admin Section -->
-    <div th:if="${userRole == 'ADMIN'}">
-        <p class="section-label">Admin Panel</p>
-        <div class="grid grid-cols-3 gap-5">
-            <a href="/users" class="cinema-card admin-only">
-                <span class="card-icon">👥</span>
-                <div class="card-title">Manage Users</div>
-                <div class="card-desc">View, edit and delete user accounts</div>
-            </a>
-            <a href="/bookings" class="cinema-card admin-only">
-                <span class="card-icon">📋</span>
-                <div class="card-title">All Bookings</div>
-                <div class="card-desc">View and manage all bookings</div>
-            </a>
-            <a href="/payments" class="cinema-card admin-only">
-                <span class="card-icon">💰</span>
-                <div class="card-title">All Payments</div>
-                <div class="card-desc">View and manage all payments</div>
-            </a>
-        </div>
-    </div>
-
 </div>
 
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- ADMIN PANEL -->
+<div th:if="${userRole == 'ADMIN'}" class="section" style="padding-top: 36px; padding-bottom: 64px;">
+    <div class="section-label">
+        Admin panel
+        <span class="admin-hint">admin only</span>
+    </div>
+    <div class="cards-grid admin-grid">
+        <a href="/users" class="action-card admin-card">
+            <div class="card-icon-wrap">👥</div>
+            <div class="card-title">Manage Users</div>
+            <div class="card-desc">View, edit and delete user accounts</div>
+        </a>
+        <a href="/payments" class="action-card admin-card">
+            <div class="card-icon-wrap">💰</div>
+            <div class="card-title">All Payments</div>
+            <div class="card-desc">Revenue dashboard &amp; payment records</div>
+        </a>
+        <a href="/feedback" class="action-card admin-card">
+            <div class="card-icon-wrap">🛡</div>
+            <div class="card-title">Moderate Reviews</div>
+            <div class="card-desc">Delete inappropriate feedback</div>
+        </a>
+        <a href="/admin/featured-posters" class="action-card admin-card">
+            <div class="card-icon-wrap">🎞</div>
+            <div class="card-title">Featured Posters</div>
+            <div class="card-desc">Choose movies shown on login &amp; home page</div>
+        </a>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+    <div class="footer-logo"><span>CINEMA</span>BOOK</div>
+    
+</footer>
+
+<script th:inline="javascript">
+/*<![CDATA[*/
+// Build movie data array from Thymeleaf
+const MOVIES = /*[[${nowShowingMovies}]]*/ [];
+
+(function () {
+    const track  = document.getElementById('carouselTrack');
+    const dotsEl = document.getElementById('carouselDots');
+    if (!track || MOVIES.length === 0) return;
+
+    const SLIDE_SIZE = 6;   // posters per slide
+    const INTERVAL   = 3000; // ms between slides
+
+    // Layout: tall/short heights per position in each column
+    // col 0: [tall, short], col 1 (mid): [short, tall], col 2: [tall, short]
+    const LAYOUT = [
+        ['tall','short'],
+        ['short','tall'],
+        ['tall','short']
+    ];
+
+    // Group movies into chunks of 6
+    function chunk(arr, size) {
+        const out = [];
+        for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size));
+        return out;
+    }
+
+    // Build one poster card element
+    function buildCard(movie, sizeClass, highlight) {
+        const wrap = document.createElement('div');
+        wrap.className = 'poster-mini ' + sizeClass + (highlight ? ' hi' : '');
+
+        const inner = document.createElement('div');
+        inner.className = 'poster-wrap';
+
+        const link = document.createElement('a');
+        link.href = '/movies/' + movie.movieId;
+
+        if (movie.imageUrl) {
+            const img = document.createElement('img');
+            img.className = 'poster-img';
+            img.src = movie.imageUrl;
+            img.alt = movie.title;
+            img.onerror = function () {
+                this.style.display = 'none';
+                this.nextElementSibling.style.display = 'flex';
+            };
+            link.appendChild(img);
+
+            const fb = document.createElement('div');
+            fb.className = 'poster-fallback';
+            fb.style.display = 'none';
+            fb.textContent = '🎬';
+            link.appendChild(fb);
+        } else {
+            const fb = document.createElement('div');
+            fb.className = 'poster-fallback';
+            fb.textContent = '🎬';
+            link.appendChild(fb);
+        }
+
+        const overlay = document.createElement('div');
+        overlay.className = 'poster-overlay';
+        link.appendChild(overlay);
+
+        const label = document.createElement('span');
+        label.className = 'poster-label';
+        label.textContent = movie.title;
+        link.appendChild(label);
+
+        inner.appendChild(link);
+        wrap.appendChild(inner);
+        return wrap;
+    }
+
+    // Build one slide element from up to 6 movies
+    function buildSlide(group) {
+        const slide = document.createElement('div');
+        slide.className = 'c-slide';
+
+        for (let col = 0; col < 3; col++) {
+            const colEl = document.createElement('div');
+            colEl.className = 'poster-col' + (col === 1 ? ' mid' : '');
+
+            const top = group[col * 2];
+            const bot = group[col * 2 + 1];
+
+            if (top) colEl.appendChild(buildCard(top, LAYOUT[col][0], col === 1));
+            if (bot) colEl.appendChild(buildCard(bot, LAYOUT[col][1], false));
+
+            slide.appendChild(colEl);
+        }
+        return slide;
+    }
+
+    const slides = chunk(MOVIES, SLIDE_SIZE);
+    let current  = 0;
+    const slideEls = [];
+
+    // Build all slides + dots
+    slides.forEach((group, i) => {
+        const slide = buildSlide(group);
+        track.appendChild(slide);
+        slideEls.push(slide);
+
+        if (slides.length > 1) {
+            const dot = document.createElement('div');
+            dot.className = 'c-dot' + (i === 0 ? ' active' : '');
+            dot.addEventListener('click', () => goTo(i));
+            dotsEl.appendChild(dot);
+        }
+    });
+
+    // Show first slide immediately
+    slideEls[0].classList.add('active');
+
+    function goTo(index) {
+        slideEls[current].classList.remove('active');
+        dotsEl.querySelectorAll('.c-dot')[current]?.classList.remove('active');
+        current = index;
+        slideEls[current].classList.add('active');
+        dotsEl.querySelectorAll('.c-dot')[current]?.classList.add('active');
+    }
+
+    // Auto-rotate — only if more than one slide
+    if (slides.length > 1) {
+        setInterval(() => goTo((current + 1) % slides.length), INTERVAL);
+    }
+})();
+/*]]>*/
+</script>
 </body>
 </html>
