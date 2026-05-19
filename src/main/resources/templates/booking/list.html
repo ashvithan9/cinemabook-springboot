@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8"><title>Bookings — CinemaBook</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--gold:#C9A84C;--gd:#C9A84C33;--bg:#080808;--card:#111;--bd:#1e1e1e;--mu:#555;--li:#aaa}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:#fff;min-height:100vh}
+nav{display:flex;align-items:center;padding:0 40px;height:62px;background:#080808f0;border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:100}
+.logo{display:flex;align-items:center;gap:7px;text-decoration:none;margin-right:auto}
+.lb{background:var(--gold);color:#000;font-size:10px;font-weight:700;padding:3px 6px;border-radius:3px}
+.lt{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:.12em;color:#fff}
+.nl{font-size:13px;color:var(--li);padding:7px 12px;border-radius:6px;text-decoration:none;transition:color .15s,background .15s;position:relative}
+.nl:hover{color:#fff;background:#ffffff08}
+.nl.on{color:#fff}
+.nl.on::after{content:'';position:absolute;bottom:-1px;left:12px;right:12px;height:2px;background:var(--gold);border-radius:2px}
+.nl.ad{color:var(--mu);font-size:12px}
+.nl.ad:hover{color:var(--gold)}
+.nvd{width:1px;height:14px;background:var(--bd);margin:0 4px}
+.nr{display:flex;align-items:center;gap:10px;margin-left:20px}
+.av{width:30px;height:30px;border-radius:50%;background:#1e1a0a;border:1.5px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--gold);text-decoration:none}
+.lo{font-size:12px;color:var(--mu);padding:5px 10px;border:1px solid var(--bd);border-radius:6px;text-decoration:none}
+.lo:hover{border-color:#444;color:var(--li)}
+.wp{max-width:1080px;margin:0 auto;padding:36px 40px 80px}
+.tb{display:flex;align-items:center;gap:12px;margin-bottom:24px}
+.pt{font-family:'Bebas Neue',sans-serif;font-size:34px;letter-spacing:.04em;margin-right:auto}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px}
+.si{background:var(--card);border:1px solid var(--bd);border-radius:9px;padding:16px 18px}
+.sv{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:.04em}
+.sk{font-size:11px;color:var(--mu);margin-top:2px}
+.tc{background:var(--card);border:1px solid var(--bd);border-radius:11px;overflow:hidden;position:relative}
+.tc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--gold)}
+table{width:100%;border-collapse:collapse}
+thead th{background:#0c0c0c;color:var(--mu);font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;padding:13px 16px;text-align:left;border-bottom:1px solid var(--bd)}
+tbody td{padding:12px 16px;font-size:13px;color:var(--li);border-bottom:1px solid #111}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:#0d0d0d}
+.bge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:10px;font-weight:500}
+.bc{background:#081008;color:#4ade80;border:1px solid #4ade8033}
+.bn{background:#1a0808;color:#e84a4a;border:1px solid #e84a4a33}
+.ca{display:flex;gap:5px}
+.bs{background:transparent;border:1px solid #252525;color:var(--li);border-radius:6px;padding:4px 9px;font-size:11px;text-decoration:none;display:inline-flex;transition:all .15s}
+.bs:hover{border-color:var(--gold);color:var(--gold)}
+.bd{background:transparent;border:1px solid #252525;color:var(--mu);border-radius:6px;padding:4px 9px;font-size:11px;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .15s}
+.bd:hover{border-color:#e84a4a;color:#e84a4a}
+.em{text-align:center;padding:60px;color:var(--mu);font-size:14px}
+footer{border-top:1px solid var(--bd);padding:20px 40px;display:flex;align-items:center;justify-content:space-between;margin-top:40px}
+.fl{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:.12em;color:var(--mu)}
+.fl span{color:var(--gold)}
+</style>
+</head>
+<body>
+<nav>
+  <a href="/" class="logo"><span class="lb">CINEMA</span><span class="lt">BOOK</span></a>
+  <div style="display:flex;align-items:center;gap:2px">
+    <a href="/movies" class="nl">Movies</a>
+    <a href="/bookings/my" class="nl on" th:class="${userRole!='ADMIN'} ? 'nl on' : 'nl'">My Bookings</a>
+    <a href="/payments/my" class="nl">My Payments</a>
+    <a href="/feedback" class="nl">Feedback</a>
+    <div class="nvd" th:if="${userRole=='ADMIN'}"></div>
+    <a href="/users" class="nl ad" th:if="${userRole=='ADMIN'}">Users</a>
+    <a href="/shows" class="nl ad" th:if="${userRole=='ADMIN'}">Shows</a>
+    <a href="/bookings" class="nl ad on" th:if="${userRole=='ADMIN'}">All Bookings</a>
+    <a href="/payments" class="nl ad" th:if="${userRole=='ADMIN'}">Payments</a>
+  </div>
+  <div class="nr">
+    <a href="/profile" class="av">◉</a>
+    <a href="/logout" class="lo">Logout</a>
+  </div>
+</nav>
+
+<div class="wp">
+  <div class="tb">
+    <div class="pt" th:text="${userRole=='ADMIN'} ? 'All Bookings' : 'My Bookings'">Bookings</div>
+    <a href="/movies" style="background:var(--gold);color:#000;border:none;padding:9px 18px;border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:5px">+ New booking</a>
+  </div>
+
+  <div class="stats" th:if="${userRole=='ADMIN'}">
+    <div class="si"><div class="sv" th:text="${totalCount}">0</div><div class="sk">Total bookings</div></div>
+    <div class="si"><div class="sv" style="color:#4ade80" th:text="${confirmedCount}">0</div><div class="sk">Confirmed</div></div>
+    <div class="si"><div class="sv" style="color:#e84a4a" th:text="${cancelledCount}">0</div><div class="sk">Cancelled</div></div>
+  </div>
+
+  <div class="tc">
+    <table>
+      <thead>
+        <tr>
+          <th>Booking ID</th>
+          <th>Movie</th>
+          <th th:if="${userRole=='ADMIN'}">User</th>
+          <th>Date &amp; Time</th>
+          <th>Hall</th>
+          <th>Seats</th>
+          <th>Total</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="b : ${bookings}">
+          <td style="font-family:monospace;font-size:11px;color:var(--mu)" th:text="${b.bookingId}"></td>
+          <td style="color:#fff;font-weight:500" th:text="${b.movieTitle}"></td>
+          <td th:if="${userRole=='ADMIN'}" style="font-size:11px;color:var(--mu)" th:text="${b.userId}"></td>
+          <td th:text="${b.showDate}+' '+${b.showTime}"></td>
+          <td th:text="${b.hall}"></td>
+          <td th:text="${b.seats}"></td>
+          <td style="color:var(--gold);font-weight:500" th:text="'$'+${b.totalAmount}"></td>
+          <td>
+            <span th:class="${b.status=='CONFIRMED'} ? 'bge bc' : 'bge bn'" th:text="${b.status}"></span>
+          </td>
+          <td>
+            <div class="ca">
+              <a th:href="@{/bookings/{id}(id=${b.bookingId})}" class="bs">View</a>
+              <form th:if="${b.status=='CONFIRMED'}"
+                    th:action="@{/bookings/{id}/cancel(id=${b.bookingId})}" method="post"
+                    onsubmit="return confirm('Cancel this booking?')">
+                <button type="submit" class="bd">Cancel</button>
+              </form>
+              <form th:if="${userRole=='ADMIN'}"
+                    th:action="@{/bookings/{id}/delete(id=${b.bookingId})}" method="post"
+                    onsubmit="return confirm('Delete this booking?')">
+                <button type="submit" class="bd">Del</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(bookings)}">
+          <td colspan="9" class="em">No bookings found. <a href="/movies" style="color:var(--gold)">Browse movies →</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<footer><div class="fl"><span>CINEMA</span>BOOK</div><div style="font-size:11px;color:#333">SE1020 — OOP Project</div></footer>
+</body>
+</html>
